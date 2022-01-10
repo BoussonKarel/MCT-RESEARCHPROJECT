@@ -23,3 +23,13 @@ Move, scale, rotate... a group of objects etc.
 ## 06 - Animations
 ### requestAnimationFrame
 **PURPOSE:** Call a function on the next frame
+
+## 07 - Cameras
+**StereoCamera:** two cameras that mimic the eyes to creata  parallax effect
+(VR etc)
+
+**OrthographicCamera:** render without perspective
+
+### Controls
+Use controls you need or make your own if not good enough.
+e.g. OrbitControls
