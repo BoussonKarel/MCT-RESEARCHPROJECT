@@ -1,15 +1,15 @@
-import './style.css'
-import * as THREE from 'three'
+import "./style.css"
+import * as THREE from "three"
 
 // Canvas
-const canvas = document.querySelector('canvas.webgl')
+const canvas = document.querySelector("canvas.webgl")
 
 // Scene
 const scene = new THREE.Scene()
 
 // AXES HELPER
-const axesHelper = new THREE.AxesHelper(1); // AxesHelper(length)
-scene.add(axesHelper);
+const axesHelper = new THREE.AxesHelper(1) // AxesHelper(length)
+scene.add(axesHelper)
 
 /**
  * Objects
@@ -28,31 +28,31 @@ const group = new THREE.Group()
 scene.add(group)
 
 const cube1 = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({color: 0xff0000})
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: 0xff0000 })
 )
 group.add(cube1)
 
 const cube2 = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({color: 0x00ff00})
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: 0x00ff00 })
 )
-cube2.position.x = - 2;
+cube2.position.x = -2
 group.add(cube2)
 
 const cube3 = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({color: 0x0000ff})
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: 0x0000ff })
 )
-cube3.position.x = 2;
+cube3.position.x = 2
 group.add(cube3)
 
 /**
  * Sizes
  */
 const sizes = {
-    width: 800,
-    height: 600
+  width: 800,
+  height: 600,
 }
 
 /**
@@ -91,7 +91,7 @@ scene.add(camera)
 // ROTATION
 // rotation is not Vector3, but Euler
 
- // First rotate around Y, then X, then Z
+// First rotate around Y, then X, then Z
 // Otherwise you will get gimball lock
 // mesh.rotation.reorder('YXZ')
 // mesh.rotation.x = Math.PI*0.25; // 1 full rotation = PI
@@ -108,12 +108,11 @@ scene.add(camera)
 // COMBINING TRANSFORMATIONS
 // You can combine transformations in any order (scale, position, rotation)
 
-
 /**
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+  canvas: canvas,
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.render(scene, camera)
