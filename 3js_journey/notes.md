@@ -54,3 +54,13 @@ TubeGeometry > wires?
 Physically based rendering
 Tends to follow real-life directions to get realistic results
 
+### Mipmapping
+Texture size divided by two until 1
+![mipmapping](../images/53ec4fed5074a197e7f346b403378c173b6cb5a45c7aff78c705f98514483ad1.png)  
+
+Texture needs to be a power of 2 (512, 1024, 2048)
+
+### Some places to find textures
+poliigon.com
+3dtextures.me
+arroway-textures.ch
