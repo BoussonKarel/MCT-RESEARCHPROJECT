@@ -19,3 +19,7 @@ Distance between two points > Ultrasone sensor!
 
 ### Groups
 Move, scale, rotate... a group of objects etc.
+
+## 06 - Animations
+### requestAnimationFrame
+**PURPOSE:** Call a function on the next frame
