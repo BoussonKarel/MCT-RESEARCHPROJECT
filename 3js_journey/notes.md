@@ -36,3 +36,21 @@ e.g. OrbitControls
 
 ## 09 - Geometries
 TubeGeometry > wires?
+
+## 11 Textures
+- **Color (or albedo):** images that cover the surface
+- **Alpha**
+- **Height or displacement:** moves vertices
+- **Normal:**
+  - No subdivision needed
+  - Adds details "magically"
+- **Ambient occlusion:** fake shadow in surface's crevices
+  - Not physically accurate, but helps to create contrast
+- **Metalness:** which part is (non-)metallic (helps with reflection)
+- **Roughness:** which part is rough and smooth (helps dissipate light)
+- ...
+
+### PBR principles
+Physically based rendering
+Tends to follow real-life directions to get realistic results
+
