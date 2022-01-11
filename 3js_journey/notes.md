@@ -37,7 +37,7 @@ e.g. OrbitControls
 ## 09 - Geometries
 TubeGeometry > wires?
 
-## 11 Textures
+## 11 - Textures
 - **Color (or albedo):** images that cover the surface
 - **Alpha**
 - **Height or displacement:** moves vertices
@@ -64,3 +64,5 @@ Texture needs to be a power of 2 (512, 1024, 2048)
 poliigon.com
 3dtextures.me
 arroway-textures.ch
+
+## 12 - Materials
