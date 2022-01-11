@@ -65,4 +65,7 @@ poliigon.com
 3dtextures.me
 arroway-textures.ch
 
-## 12 - Materials
+## 13 - 3D text
+### Get a typeface font
+- Convert your font with converters like this one: https://gero3.github.io/facetype.js/. You have to provide a file and click on the convert button.
+- Find fonts in the three.JS examples /node_modules/three/examples/fonts/
