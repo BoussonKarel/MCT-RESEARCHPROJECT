@@ -1,9 +1,11 @@
 import "./style.css"
 import * as THREE from "three"
 import * as dat from "lil-gui"
-// import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js'
 
 const gui = new dat.GUI()
+
+const pointerLockMode = false
+const rightClickNeeded = true
 
 /**
  * Base
@@ -45,6 +47,7 @@ window.addEventListener("resize", () => {
  */
 const grabbables = []
 const axesHelper = new THREE.AxesHelper(5)
+axesHelper.visible = false
 scene.add(axesHelper)
 
 // FLOOR
@@ -88,7 +91,7 @@ const lightBulb = new THREE.Mesh(
   new THREE.MeshBasicMaterial({
     color: "yellow",
     transparent: true,
-    alpha: 0.5,
+    opacity: 0.9,
   })
 )
 
@@ -103,7 +106,7 @@ lampStick.position.y = tableHeight + lampStickSize/2
 lampStick.position.x += 0.85
 
 // lightBulb.position.copy(table.position)
-lightBulb.position.y = tableHeight + lampStickSize
+lightBulb.position.y = tableHeight + lampStickSize + bulbRadius -0.01
 lightBulb.position.x += 0.85
 
 lampGroup.add(lightBulb, lampStick)
@@ -123,6 +126,7 @@ camera.position.z = 1
 camera.position.y = 1.75
 scene.add(camera)
 
+camera.rotation.reorder("YXZ")
 camera.lookAt(new THREE.Vector3(0, 1.5, 0))
 
 // Crosshair?
@@ -132,6 +136,7 @@ const crosshair = new THREE.Mesh(
 )
 crosshair.position.y = 0
 crosshair.position.z = - camera.near - 0.01
+crosshair.visible = false;
 camera.add(crosshair)
 
 /**
@@ -140,35 +145,9 @@ camera.add(crosshair)
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
 scene.add(ambientLight)
 
-gui
-  .add(ambientLight, "intensity")
-  .min(0)
-  .max(1)
-  .step(0.1)
-  .name("AmbientLight intensity")
-
 const pointLight = new THREE.PointLight(0xffff00, 2, 10)
 pointLight.position.copy(lightBulb.position)
 scene.add(pointLight)
-
-gui
-  .add(pointLight, "intensity")
-  .min(0)
-  .max(10)
-  .step(0.1)
-  .name("PointLight intensity")
-gui
-  .add(pointLight, "distance")
-  .min(0)
-  .max(200)
-  .step(1)
-  .name("PointLight distance")
-gui
-  .add(pointLight, "decay")
-  .min(0)
-  .max(50)
-  .step(0.1)
-  .name("PointLight decay")
 
 const pointLightHelper = new THREE.PointLightHelper(pointLight)
 pointLightHelper.visible = false
@@ -188,52 +167,94 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  */
 // Drag
 const dragRayCaster = new THREE.Raycaster()
-
 let mainMouseDown;
+let rightMouseDown;
 
+// Drag
 window.addEventListener('mousedown', (e) => {
   if (e.button === 0) mainMouseDown = true
+  if (e.button === 2) rightMouseDown = true
 })
 
 window.addEventListener('mouseup', (e) => {
   if (e.button === 0) mainMouseDown = false
+  if (e.button === 2) rightMouseDown = false
 })
 
-// Look around
+document.addEventListener('contextmenu', e => {
+  e.preventDefault()
+}, false)
+
+// Look around using movementX, movementY
 const updateMovement = (event) => {
-  camera.rotation.reorder("YXZ")
+  if (rightClickNeeded && !rightMouseDown) return
+  // LEFT - RIGHT
   camera.rotation.y += -event.movementX * 0.003
+
+  // UP - DOWN
   const RotationX = camera.rotation.x - event.movementY * 0.003
   const halfPi = Math.PI / 2
-  camera.rotation.x = Math.max(Math.min(RotationX, halfPi), -halfPi)
+  camera.rotation.x = Math.max(Math.min(RotationX, halfPi), -halfPi) // Between - halfPi and + halfPi
+}
+
+// Look around using clientX, clientY
+const updatePosition = (event) => {
+  // LEFT - RIGHT
+  camera.rotation.y = (- (event.clientX / sizes.width) * 2 - 1) * Math.PI
+
+  // UP - DOWN
+  // (event.clientY / sizes.height) ==> Get Y position from 0 - 1
+  // (...) * 2 - 1 ==> normalize from -1 to 1
+  // (...) * Math.PI/2 ==> half a rotation
+  camera.rotation.x = - ((event.clientY / sizes.height) * 2 - 1) * Math.PI/2
 }
 
 const usePointerLock = () => {
-  canvas.addEventListener("click", () => {
-    canvas.requestPointerLock()
-  })
-  
-  /* events fired on the draggable target */
-  document.addEventListener("drag", function(event) {
-    console.log(event)
-  }, false);
-  
-  document.addEventListener("pointerlockchange", lockChange)
+  crosshair.visible = true;
 
+  canvas.addEventListener("click", canvas.requestPointerLock)
+    
+  document.addEventListener("pointerlockchange", lockChange)
+  
   function lockChange() {
-    try {
-      if (document.pointerLockElement === canvas) {
+    if (document.pointerLockElement === canvas) {
         document.addEventListener("mousemove", updateMovement)
-      } else {
-        document.removeEventListener("mousemove", updateMovement)
-      }
-    } catch(e) {
-      console.error({e})
+    } else {
+      document.removeEventListener("mousemove", updateMovement)
     }
   }
 }
 
-usePointerLock()
+let paused = false;
+
+const useNoLock = () => {
+  const updateFunction = rightClickNeeded ? updateMovement : updatePosition
+
+  document.addEventListener("mousemove", updateFunction)
+
+  const togglePause = () => {
+    paused = !paused;
+
+    if (paused) {
+      // Remove moving event
+      document.removeEventListener("mousemove", updateFunction)
+      // Add a clicking event to undo the pause
+      document.addEventListener("click", togglePause)
+    } else {
+      // Add moving event again
+      document.addEventListener("mousemove", updateFunction)
+      // Remove the clicking event, there is no pause to undo
+      document.removeEventListener("click", togglePause)
+    }
+  }
+
+  if (!rightClickNeeded) document.addEventListener("keydown", (event) => {
+    if (event.code === "Escape") togglePause()
+  })
+}
+
+if (pointerLockMode) usePointerLock()
+else useNoLock()
 
 /**
  * Animate
