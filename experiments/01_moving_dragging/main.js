@@ -125,6 +125,15 @@ scene.add(camera)
 
 camera.lookAt(new THREE.Vector3(0, 1.5, 0))
 
+// Crosshair?
+const crosshair = new THREE.Mesh(
+  new THREE.CircleGeometry(0.001),
+  new THREE.MeshStandardMaterial({color: 0xffffff})
+)
+crosshair.position.y = 0
+crosshair.position.z = - camera.near - 0.01
+camera.add(crosshair)
+
 /**
  * Lights
  */
@@ -177,34 +186,20 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 /**
  * Controls
  */
-// Look around
+// Drag
 const dragRayCaster = new THREE.Raycaster()
 
-canvas.addEventListener("click", () => {
-  canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock
-  canvas.requestPointerLock()
+let mainMouseDown;
+
+window.addEventListener('mousedown', (e) => {
+  if (e.button === 0) mainMouseDown = true
 })
 
-/* events fired on the draggable target */
-document.addEventListener("drag", function(event) {
-  console.log(event)
-}, false);
+window.addEventListener('mouseup', (e) => {
+  if (e.button === 0) mainMouseDown = false
+})
 
-document.addEventListener("pointerlockchange", lockChange)
-document.addEventListener("mozpointerlockchange", lockChange)
-
-function lockChange() {
-  try {
-    if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
-      document.addEventListener("mousemove", updateMovement)
-    } else {
-      document.removeEventListener("mousemove", updateMovement)
-    }
-  } catch(e) {
-    console.error({e})
-  }
-}
-
+// Look around
 const updateMovement = (event) => {
   camera.rotation.reorder("YXZ")
   camera.rotation.y += -event.movementX * 0.003
@@ -212,6 +207,35 @@ const updateMovement = (event) => {
   const halfPi = Math.PI / 2
   camera.rotation.x = Math.max(Math.min(RotationX, halfPi), -halfPi)
 }
+
+const usePointerLock = () => {
+  canvas.addEventListener("click", () => {
+    canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock
+    canvas.requestPointerLock()
+  })
+  
+  /* events fired on the draggable target */
+  document.addEventListener("drag", function(event) {
+    console.log(event)
+  }, false);
+  
+  document.addEventListener("pointerlockchange", lockChange)
+  document.addEventListener("mozpointerlockchange", lockChange)
+
+  function lockChange() {
+    try {
+      if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
+        document.addEventListener("mousemove", updateMovement)
+      } else {
+        document.removeEventListener("mousemove", updateMovement)
+      }
+    } catch(e) {
+      console.error({e})
+    }
+  }
+}
+
+usePointerLock()
 
 /**
  * Animate
@@ -228,6 +252,10 @@ const tick = () => {
 
   for (const intersect of intersects) {
     intersect.object.material.color.set('green')
+    if (mainMouseDown) {
+      intersect.object.position.x = intersect.point.x
+      intersect.object.position.z = intersect.point.z
+    }
   }
 
   // Update controls
