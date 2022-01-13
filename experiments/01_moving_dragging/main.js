@@ -210,7 +210,6 @@ const updateMovement = (event) => {
 
 const usePointerLock = () => {
   canvas.addEventListener("click", () => {
-    canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock
     canvas.requestPointerLock()
   })
   
@@ -220,11 +219,10 @@ const usePointerLock = () => {
   }, false);
   
   document.addEventListener("pointerlockchange", lockChange)
-  document.addEventListener("mozpointerlockchange", lockChange)
 
   function lockChange() {
     try {
-      if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
+      if (document.pointerLockElement === canvas) {
         document.addEventListener("mousemove", updateMovement)
       } else {
         document.removeEventListener("mousemove", updateMovement)
@@ -251,7 +249,6 @@ const tick = () => {
   const intersects = dragRayCaster.intersectObjects(grabbables)
 
   for (const intersect of intersects) {
-    intersect.object.material.color.set('green')
     if (mainMouseDown) {
       intersect.object.position.x = intersect.point.x
       intersect.object.position.z = intersect.point.z
