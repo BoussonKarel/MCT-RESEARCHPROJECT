@@ -6,8 +6,9 @@ const gui = new dat.GUI()
 
 const pausedMenu = document.querySelector(".paused")
 
-const pointerLockMode = true
-const rightClickNeeded = false
+// CONCLUSIE NO LOCK + RIGHT CLICK
+const pointerLockMode = false
+const rightClickNeeded = true
 
 if (pointerLockMode) pausedMenu.classList.add("visible")
 
