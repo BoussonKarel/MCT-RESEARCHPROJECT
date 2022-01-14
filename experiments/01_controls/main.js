@@ -4,8 +4,8 @@ import * as dat from "lil-gui"
 
 const gui = new dat.GUI()
 
-const pointerLockMode = false
-const rightClickNeeded = true
+const pointerLockMode = true
+const rightClickNeeded = false
 
 /**
  * Base
@@ -191,7 +191,9 @@ const updateMovement = (event) => {
 
   if (rightClickNeeded && !rightMouseDown) return
   // LEFT - RIGHT
-  camera.rotation.y += -event.movementX * 0.003
+  
+  if (rightClickNeeded) camera.rotation.y += event.movementX * 0.003
+  else camera.rotation.y -= event.movementX * 0.003
 
   // UP - DOWN
   const RotationX = camera.rotation.x - event.movementY * 0.003
