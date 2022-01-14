@@ -136,7 +136,7 @@ const crosshair = new THREE.Mesh(
 )
 crosshair.position.y = 0
 crosshair.position.z = - camera.near - 0.01
-crosshair.visible = false;
+if (!pointerLockMode) crosshair.visible = false;
 camera.add(crosshair)
 
 /**
@@ -187,6 +187,8 @@ document.addEventListener('contextmenu', e => {
 
 // Look around using movementX, movementY
 const updateMovement = (event) => {
+  if (rightClickNeeded) updateCursorPosition(event)
+
   if (rightClickNeeded && !rightMouseDown) return
   // LEFT - RIGHT
   camera.rotation.y += -event.movementX * 0.003
@@ -197,21 +199,26 @@ const updateMovement = (event) => {
   camera.rotation.x = Math.max(Math.min(RotationX, halfPi), -halfPi) // Between - halfPi and + halfPi
 }
 
-// Look around using clientX, clientY
+const cursorPosition = new THREE.Vector2()
+
+const updateCursorPosition = (event) => {
+  cursorPosition.x = event.clientX / sizes.width * 2 - 1
+  cursorPosition.y = - (event.clientY / sizes.height) * 2 + 1
+}
+
+// Look around using clientX, clientY (180°)
 const updatePosition = (event) => {
+  updateCursorPosition(event)
   // LEFT - RIGHT
-  camera.rotation.y = (- (event.clientX / sizes.width) * 2 - 1) * Math.PI
+  const degreesY = 180
+  camera.rotation.y = - cursorPosition.x * (degreesY / 360 * Math.PI)
 
   // UP - DOWN
-  // (event.clientY / sizes.height) ==> Get Y position from 0 - 1
-  // (...) * 2 - 1 ==> normalize from -1 to 1
-  // (...) * Math.PI/2 ==> half a rotation
-  camera.rotation.x = - ((event.clientY / sizes.height) * 2 - 1) * Math.PI/2
+  const degreesX = 180 
+  camera.rotation.x = cursorPosition.y * (degreesX / 360 * Math.PI)
 }
 
 const usePointerLock = () => {
-  crosshair.visible = true;
-
   canvas.addEventListener("click", canvas.requestPointerLock)
     
   document.addEventListener("pointerlockchange", lockChange)
@@ -265,12 +272,16 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime()
 
   // Update raycaster
-  dragRayCaster.setFromCamera({x: 0, y: 0}, camera)
+  if (pointerLockMode) { // When using crosshair
+    dragRayCaster.setFromCamera({x: 0, y: 0}, camera)
+  } else {
+    dragRayCaster.setFromCamera({x: cursorPosition.x, y: cursorPosition.y}, camera)
+  }
 
   const intersects = dragRayCaster.intersectObjects(grabbables)
 
   for (const intersect of intersects) {
-    if (mainMouseDown) {
+    if (mainMouseDown) { // Drag
       intersect.object.position.x = intersect.point.x
       intersect.object.position.z = intersect.point.z
     }
