@@ -4,8 +4,12 @@ import * as dat from "lil-gui"
 
 const gui = new dat.GUI()
 
+const pausedMenu = document.querySelector(".paused")
+
 const pointerLockMode = true
 const rightClickNeeded = false
+
+if (pointerLockMode) pausedMenu.classList.add("visible")
 
 /**
  * Base
@@ -167,10 +171,9 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  */
 // Drag
 const dragRayCaster = new THREE.Raycaster()
-let mainMouseDown;
-let rightMouseDown;
+let mainMouseDown = false;
+let rightMouseDown = false;
 
-// Drag
 window.addEventListener('mousedown', (e) => {
   if (e.button === 0) mainMouseDown = true
   if (e.button === 2) rightMouseDown = true
@@ -202,7 +205,6 @@ const updateMovement = (event) => {
 }
 
 const cursorPosition = new THREE.Vector2()
-
 const updateCursorPosition = (event) => {
   cursorPosition.x = event.clientX / sizes.width * 2 - 1
   cursorPosition.y = - (event.clientY / sizes.height) * 2 + 1
@@ -228,8 +230,10 @@ const usePointerLock = () => {
   function lockChange() {
     if (document.pointerLockElement === canvas) {
         document.addEventListener("mousemove", updateMovement)
+        pausedMenu.classList.remove("visible")
     } else {
       document.removeEventListener("mousemove", updateMovement)
+      pausedMenu.classList.add("visible")
     }
   }
 }
@@ -249,11 +253,15 @@ const useNoLock = () => {
       document.removeEventListener("mousemove", updateFunction)
       // Add a clicking event to undo the pause
       document.addEventListener("click", togglePause)
+
+      pausedMenu.classList.add("visible")
     } else {
       // Add moving event again
       document.addEventListener("mousemove", updateFunction)
       // Remove the clicking event, there is no pause to undo
       document.removeEventListener("click", togglePause)
+
+      pausedMenu.classList.remove("visible")
     }
   }
 
