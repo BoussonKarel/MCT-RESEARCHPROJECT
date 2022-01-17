@@ -1,0 +1,8 @@
+.led {
+    background-color: red;
+    opacity: 0.5;
+}
+
+.led.powered {
+    opacity: 1;
+}
