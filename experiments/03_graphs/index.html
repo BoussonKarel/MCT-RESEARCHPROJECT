@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script lang="js">
+    class Graph {
+      constructor() {
+        this.vertices = [];
+        this.adjacent = {};
+        this.edges = 0;
+      }
+
+      addVertex(v) {
+        this.vertices.push(v);
+        this.adjacent[v] = [];
+      }
+
+      addEdge(v, w) {
+        this.adjacent[v].push(w);
+        this.adjacent[w].push(v);
+        this.edges++;
+      }
+
+      dfs(goal, v = this.vertices[0], discovered = []) {
+        let adj = this.adjacent;
+
+        discovered[v] = true; // Mark this v(ertice) as discovered
+
+        if (v === goal) return true; // Is this our goal: done
+
+        // Check it's neighbours
+        for (const neighbourV of adj[v]) {
+          // If we haven't discovered this one yet
+          if (!discovered[neighbourV]) {
+            return this.dfs(goal, neighbourV, discovered)
+          }
+        }
+
+        return false;
+      }
+    }
+
+    const g = new Graph()
+    g.addVertex("A.5V")
+    g.addVertex("U.1")
+    g.addVertex("K1.1")
+    g.addVertex("K1.2")
+    g.addVertex("R.1")
+    g.addVertex("R.2")
+    g.addVertex("K2.1")
+    g.addVertex("K2.2")
+    g.addVertex("U.4")
+    g.addVertex("A.GND")
+
+    g.addVertex("BROL")
+    g.addVertex("MEERBROL")
+
+    g.addEdge("A.5V", "K1.1") // Arduino - Kabel1
+    g.addEdge("K1.1", "K1.2") // (kabel1)
+    g.addEdge("K1.2", "R.1") // Kabel1 - Weerstand
+    g.addEdge("R.1", "R.2") // (weerstand)
+    g.addEdge("R.2", "K2.1") // Weerstand - Kabel2
+    g.addEdge("K2.1", "K2.2") // (kabel2)
+    g.addEdge("K2.2", "U.1") // Kabel2 - Ultrasone
+    
+    g.addEdge("K1.2", "MEERBROL") // Kabel1 - BROL
+    g.addEdge("K2.1", "BROL") // Kabel2 - BROL
+
+    console.log(g.dfs("U.1", "A.5V"))
+  </script>
+</body>
+</html>
