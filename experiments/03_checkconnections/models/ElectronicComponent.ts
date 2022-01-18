@@ -20,18 +20,6 @@ export class ElectronicComponent {
   connections: Connection[] = []
   resistance: number = 0
 
-  addConnection(node1: Node, node2: Node) {
-    node1.parent.connections.push({
-      from: node1,
-      to: node2
-    })
-
-    node2.parent.connections.push({
-      from: node2,
-      to: node1
-    })
-  }
-
   static checkConnection(goal: Node, v: Node, discovered = [], path = []) {
     // discovered: list of ALL nodes we visited
     // path: list of nodes we visited, leading to our goal

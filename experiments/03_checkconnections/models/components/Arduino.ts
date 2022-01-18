@@ -1,15 +1,15 @@
 import { ElectronicComponent, tempPosition } from "../ElectronicComponent"
-import { Node } from "../Node"
+import { Node, NodeType} from "../Node"
 
 export class Arduino extends ElectronicComponent {
   constructor(object) {
     super(object)
 
     this.nodes = {
-      "5V": new Node(tempPosition, this),
-      d2: new Node(tempPosition, this),
-      d3: new Node(tempPosition, this),
-      GND: new Node(tempPosition, this),
+      "5V": new Node(tempPosition, this, NodeType.OUTPUT),
+      d2: new Node(tempPosition, this, NodeType.OUTPUT),
+      d3: new Node(tempPosition, this, NodeType.OUTPUT),
+      GND: new Node(tempPosition, this, NodeType.GROUND),
     }
   }
 }

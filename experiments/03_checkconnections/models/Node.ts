@@ -1,8 +1,11 @@
 import * as THREE from 'three'
 import { ElectronicComponent } from './ElectronicComponent'
 
-enum NodeType {
+export enum NodeType {
   STANDARD = 0,
+  OUTPUT = 1,
+  INPUT = 2,
+  GROUND = 3
 }
 
 export class Node {

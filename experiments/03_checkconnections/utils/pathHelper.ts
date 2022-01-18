@@ -1,4 +1,4 @@
-import { Node } from '../models/Node'
+import { Node, NodeType } from '../models/Node'
 
 export const calculatePathResistance = (path: Node[]) => {
   const parents = []
@@ -11,4 +11,16 @@ export const calculatePathResistance = (path: Node[]) => {
   }
 
   return totalResistance;
+}
+
+export const pathHasOutput = (path: Node[]) => {
+  const parents = []
+
+  for (const step of path) {
+    if (!parents.includes(step.parent)) {
+      if (step.type === NodeType.OUTPUT) return true;
+    }
+  }
+
+  return false; // No output found
 }
