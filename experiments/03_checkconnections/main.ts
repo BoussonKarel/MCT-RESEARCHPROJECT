@@ -4,126 +4,188 @@ import * as THREE from 'three'
 /*
  * General
  */
-interface Component {
-  id: string
-  object: THREE.Object3D
-  pins: AssignedPins
-  connections?: Connection
-}
 
 /*
  * Electronics
  */
-// Pins
-interface Pin {
-  name: string
-  powered?: boolean
-  position?: THREE.Vector3
+
+enum NodeType {
+  STANDARD = 0,
 }
 
-interface AssignedPins {
-  [key: string] : Pin
+class Node {
+  constructor(position: THREE.Vector3, parent: ElectronicComponent, type = NodeType.STANDARD) {
+    this.position = position
+    this.type = type
+    this.parent = parent
+  }
+
+  position: THREE.Vector3
+  type: NodeType
+  parent: ElectronicComponent
 }
+
+
+
+interface NodeList {
+  [key: string]: Node
+}
+
+interface Connection {
+  from: Node
+  to: Node
+}
+
+const tempPosition = new THREE.Vector3(0,0,0)
+
+let increment = 0;
+
+class ElectronicComponent {
+  constructor(object: THREE.Mesh) {
+    this.name = increment
+    increment++
+    this.object = object
+  }
+
+  name: number
+  nodes: NodeList
+  object: THREE.Mesh
+  connections: Connection[] = []
+
+  addConnection(node1: Node, node2: Node) {
+    node1.parent.connections.push({
+      from: node1,
+      to: node2
+    })
+
+    node2.parent.connections.push({
+      from: node2,
+      to: node1
+    })
+  }
+
+  static checkConnection(goal: Node, v: Node, discovered = [], path = []) {
+    // discovered: list of ALL nodes we visited
+    // path: list of nodes we visited, leading to our goal
+    path.push(v) // Add v this to our path
+    discovered.push(v) // List of ALL nodes we visited
+
+    if (goal === v) return path; // If we have reached our goal, return the used path
+
+    // Check the other connections...
+    const otherConnections = v.parent.connections.filter(conn => {
+      // ...coming from the parent on this node 'v' and going to a node that hasn't been visited yet
+      return conn.from === v && !discovered.includes(conn.to);
+    })
+
+    for (const conn of otherConnections) {
+      const newPath = this.checkConnection(goal, conn.to, discovered, path);
+
+      if (newPath.length > 0) {
+        // If this new path is > 0
+        return newPath;
+      } else {
+        // Else remove this node from the path
+        const index = path.findIndex(v => v === conn.to)
+        path.splice(index, 1)
+      }
+    }
+
+    return []; // No path found
+  }
+}
+
+class Arduino extends ElectronicComponent {
+  constructor(object) {
+    super(object)
+
+    this.nodes = {
+      "5V": new Node(tempPosition, this),
+      d2: new Node(tempPosition, this),
+      d3: new Node(tempPosition, this),
+      GND: new Node(tempPosition, this),
+    }
+  }
+}
+
+class UltrasoneSensor extends ElectronicComponent {
+  constructor(object) {
+    super(object)
+
+    this.nodes = {
+      1: new Node(tempPosition, this),
+      2: new Node(tempPosition, this),
+      3: new Node(tempPosition, this),
+      4: new Node(tempPosition, this),
+    }
+  }
+}
+
+class Cable extends ElectronicComponent {
+  constructor(object) {
+    super(object)
+
+    this.nodes = {
+      1: new Node(tempPosition, this),
+      2: new Node(tempPosition, this),
+    }
+
+    // "Internal wiring"
+    this.addConnection(this.nodes[1], this.nodes[2])
+  }
+}
+
+class Resistor extends ElectronicComponent {
+  constructor(object) {
+    super(object)
+
+    this.nodes = {
+      1: new Node(tempPosition, this),
+      2: new Node(tempPosition, this),
+    }
+
+    // "Internal wiring"
+    this.addConnection(this.nodes[1], this.nodes[2])
+  }
+}
+
+const arduino = new Arduino(undefined) // 0
+const HCSR05 = new UltrasoneSensor(undefined) // 1
+const cable1 = new Cable(undefined) // 2
+const resistor = new Resistor(undefined) // 3
+const cable2 = new Cable(undefined) // 4
+const cable3 = new Cable(undefined) // 5
+const cable4 = new Cable(undefined) // 6
+
+arduino.addConnection(arduino.nodes["5V"], cable1.nodes[1])
+arduino.addConnection(cable1.nodes[2], resistor.nodes[1])
+arduino.addConnection(resistor.nodes[2], cable2.nodes[1])
+arduino.addConnection(cable3.nodes[2], HCSR05.nodes[1]) // Cable that leads nowhere
+arduino.addConnection(cable3.nodes[2], cable4.nodes[1]) // Cable that leads nowhere
+arduino.addConnection(cable4.nodes[2], HCSR05.nodes[1]) // Cable that leads nowhere
+// arduino.addConnection(cable2.nodes[2], HCSR05.nodes[1]) // Takes the first route made, not the shortest route
+arduino.addConnection(arduino.nodes["5V"], HCSR05.nodes[1])
+
+const pathULT1toARD5V = ElectronicComponent.checkConnection(
+  arduino.nodes["5V"], HCSR05.nodes[1]
+)
+console.log(pathULT1toARD5V)
 
 /*
  * Connections
  */
-interface Connection {
-  [other: string]: ConnectionPins
-}
-
-interface ConnectionPins {
-  // from: to
-  [from: string] : string
-}
-
-const conn1 : Connection = {
-  "ARDUINO" : {
-    "1": "5V"
-  } // FROM this.pins[1] to Arduino.pins[5V]
-}
-
-const components = []
-
-const ultrasoneSensor: Component = {
-  id: "ULTRASONE01",
-  object: null,
-  pins: {
-    1: {name: "Vcc"},
-    2: {name: "Trig"},
-    3: {name: "Echo"},
-    4: {name: "GND"},
-  }
-}
-components.push(ultrasoneSensor)
-
-const arduino: Component = {
-  id: "ARDUINO01",
-  object: null,
-  pins: {
-    "5V": {name: "5V"},
-    2: {name: "D2"},
-    3: {name: "D3"},
-    "GND": {name: "GND"},
-  }
-}
-components.push(arduino)
-
-const createConnection = (component1: Component, pin1: string, component2: Component, pin2: string) => {
-  if (!component1.connections) component1.connections = {}
-  if (!component2.connections) component2.connections = {}
-
-  // If there is no connection between them yet, create one
-  if (!component1.connections[component2.id]) {
-    component1.connections[component2.id] = {}
-    component2.connections[component1.id] = {}
-  }
-
-  component1.connections[component2.id][pin1] = pin2
-  component2.connections[component1.id][pin2] = pin1
-}
-
-createConnection(arduino, "5V", ultrasoneSensor, "1")
-createConnection(arduino, "GND", ultrasoneSensor, "4")
-createConnection(arduino, "2", ultrasoneSensor, "2")
-createConnection(arduino, "3", ultrasoneSensor, "3")
-
-console.log(arduino)
-console.log(ultrasoneSensor)
-
-const checkUltrasoneConnections = (arduino: Component, ultrasone: Component) => {
-  if (arduino.connections && arduino.connections[ultrasone.id]) {
-    const connectionsBetween = arduino.connections[ultrasone.id]
-    // if there are connections between the two
-    if (connectionsBetween["5V"] === "1") {
-      console.log("5V-Vcc succesfully connected")
-    }
-    if (connectionsBetween["2"] === "2") {
-      console.log("D2-Echo succesfully connected")
-    }
-    if (connectionsBetween["3"] === "3") {
-      console.log("D3-Trig succesfully connected")
-    }
-    if (connectionsBetween["GND"] === "4") {
-      console.log("GND-GND succesfully connected")
-    }
-  }
-}
-
-checkUltrasoneConnections(arduino, ultrasoneSensor)
-
 const init = () => {
   console.log("Loaded")
   const ultrasoneElement = document.querySelector("#ultrasone")
   const arduinoElement = document.querySelector("#arduino")
 
-  for (const [pin, value] of Object.entries(arduino.pins)) {
-    arduinoElement.innerHTML += `[${pin}] ${value.name}<br />`
-  }
+  // for (const [pin, value] of Object.entries(arduino.pins)) {
+  //   arduinoElement.innerHTML += `[${pin}] ${value.name}<br />`
+  // }
 
-  for (const [pin, value] of Object.entries(ultrasoneSensor.pins)) {
-    ultrasoneElement.innerHTML += `[${pin}] ${value.name}<br />`
-  }
+  // for (const [pin, value] of Object.entries(ultrasoneSensor.pins)) {
+  //   ultrasoneElement.innerHTML += `[${pin}] ${value.name}<br />`
+  // }
 }
 
 document.addEventListener('DOMContentLoaded', init)
