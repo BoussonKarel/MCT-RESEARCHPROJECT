@@ -1,3 +1,4 @@
+import { addConnection } from "../Connection"
 import { ElectronicComponent, tempPosition } from "../ElectronicComponent"
 import { Node } from "../Node"
 
@@ -13,6 +14,6 @@ export class Resistor extends ElectronicComponent {
     this.resistance = resistance
 
     // "Internal wiring"
-    this.addConnection(this.nodes[1], this.nodes[2])
+    addConnection(this.nodes[1], this.nodes[2])
   }
 }

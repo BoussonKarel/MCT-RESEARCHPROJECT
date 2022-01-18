@@ -1,5 +1,6 @@
 import { ElectronicComponent, tempPosition } from "../ElectronicComponent"
 import { Node } from "../Node"
+import { addConnection } from "../Connection"
 
 export class Cable extends ElectronicComponent {
   constructor(object) {
@@ -11,6 +12,6 @@ export class Cable extends ElectronicComponent {
     }
 
     // "Internal wiring"
-    this.addConnection(this.nodes[1], this.nodes[2])
+    addConnection(this.nodes[1], this.nodes[2])
   }
 }
