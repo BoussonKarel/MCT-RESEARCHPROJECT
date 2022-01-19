@@ -1,7 +1,13 @@
 import "./style.css"
+
+import * as dat from 'lil-gui'
 import * as THREE from 'three'
 import sources from './sources'
 import { Resources } from "./3D/Resources"
+import { ClickAndDrag } from "./3D/Controls/ClickAndDrag"
+import { Sizes } from "./3D/Sizes"
+
+const ui = new dat.GUI()
 
 /**
  * Base
@@ -15,27 +21,21 @@ const resources = new Resources(sources)
 /**
  * Sizes
  */
-const sizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-}
+const sizes = new Sizes()
 
-window.addEventListener("resize", () => {
-  sizes.width = window.innerWidth
-  sizes.height = window.innerHeight
-
+sizes.on('resize', () => {
   camera.aspect = sizes.width / sizes.height
   camera.updateProjectionMatrix()
 
   renderer.setSize(sizes.width, sizes.height)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.setPixelRatio(sizes.pixelRatio)
 })
 
 /**
  * Camera
  */
 const camera = new THREE.PerspectiveCamera(
-  50,
+  60,
   sizes.width / sizes.height,
   0.1,
   100
@@ -43,6 +43,10 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.z = 0.75
 camera.position.y = 1.25
 scene.add(camera)
+
+ui.add(camera, 'fov').min(15).max(100).step(1).name('Camera FOV').onChange(() => {
+  camera.updateProjectionMatrix()
+})
 
 /**
  * Lights
@@ -60,6 +64,7 @@ scene.add(directionalLight)
  * Objects
  */
 const axesHelper = new THREE.AxesHelper(3)
+axesHelper.visible = false
 scene.add(axesHelper)
 
 resources.on('loaded', () => {
@@ -86,10 +91,10 @@ resources.on('loaded', () => {
   console.log(desk)
 
   // Cube
-  const cubeSize = 0.2;
+  const cubeSize = 0.1;
   const cube = new THREE.Mesh(
     new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize),
-    new THREE.MeshBasicMaterial({color: 0xff2222})
+    new THREE.MeshStandardMaterial({color: 0xff2222})
   )
   cube.position.set(0, deskHeight + cubeSize/2, 0)
   scene.add(cube)
@@ -109,6 +114,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 /**
  * Controls
  */
+const controls = new ClickAndDrag(camera, canvas, sizes)
 
 /**
  * Animate
