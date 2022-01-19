@@ -18,6 +18,8 @@ const canvas = document.querySelector("canvas.webgl")
 const time = new Time();
 
 const scene = new THREE.Scene()
+// @ts-ignore
+window.scene = scene
 
 const resources = new Resources(sources)
 
@@ -52,6 +54,10 @@ ui.add(camera, 'fov').min(15).max(100).step(1).name('Camera FOV').onChange(() =>
   camera.updateProjectionMatrix()
 })
 
+ui.add(camera, 'zoom').min(1).max(5).step(.05).name('Camera Zoom').onChange(() => {
+  camera.updateProjectionMatrix()
+})
+
 /**
  * Controls
  */
@@ -72,10 +78,6 @@ scene.add(directionalLight)
 /**
  * Objects
  */
-const axesHelper = new THREE.AxesHelper(3)
-axesHelper.visible = false
-scene.add(axesHelper)
-
 resources.on('loaded', () => {
   // Floor
   const floorGeometry = new THREE.PlaneGeometry(5,5)
@@ -97,7 +99,6 @@ resources.on('loaded', () => {
   desk.position.set(0, deskHeight * 0.5, 0)
 
   scene.add(desk)
-  console.log(desk)
 
   // Cube
   const cubeSize = 0.1;
@@ -108,6 +109,14 @@ resources.on('loaded', () => {
   cube.position.set(0, deskHeight + cubeSize/2, 0)
   scene.add(cube)
   controls.grabbables.push(cube)
+
+  // Cube
+  const solidCube = new THREE.Mesh(
+    cube.geometry,
+    new THREE.MeshStandardMaterial({color: 0x22ff22})
+  )
+  solidCube.position.set(.5, deskHeight + cubeSize/2, 0)
+  scene.add(solidCube)
 
   camera.lookAt(cube.position)
 })
