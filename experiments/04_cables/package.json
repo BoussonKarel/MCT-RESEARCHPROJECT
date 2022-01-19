@@ -7,8 +7,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^2.7.2",
-    "@types/three": "^0.136.1"
+    "@types/events": "^3.0.0",
+    "@types/three": "^0.136.1",
+    "vite": "^2.7.2"
   },
   "dependencies": {
     "events": "^3.3.0",

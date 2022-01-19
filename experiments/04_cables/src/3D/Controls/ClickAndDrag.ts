@@ -21,6 +21,7 @@ export class ClickAndDrag {
   pIntersect = new THREE.Vector3() // Point of intersection w/ object
   shift = new THREE.Vector3() // Distance between object.position and points of intersection w/ object
 
+
   constructor(
     camera: THREE.PerspectiveCamera,
     domElement: Element,
@@ -46,8 +47,8 @@ export class ClickAndDrag {
 
     this.raycaster = new THREE.Raycaster()
 
-    this.time.on("tick", () => {
-      // this.dragObjects()
+    this.time.on('tick', () => {
+      if (this.selectedObject) console.log(this.camera.position.distanceTo(this.selectedObject.position))
     })
   }
 
@@ -85,9 +86,8 @@ export class ClickAndDrag {
     // Use first object
     if (intersects.length > 0) {
       this.pIntersect.copy(intersects[0].point)
-      this.plane.setFromNormalAndCoplanarPoint(this.pNormal, this.pIntersect);
+      this.plane.setFromNormalAndCoplanarPoint(this.pNormal, this.pIntersect)
       this.shift.subVectors(intersects[0].object.position, intersects[0].point)
-
       this.selectedObject = intersects[0].object
     }
   }

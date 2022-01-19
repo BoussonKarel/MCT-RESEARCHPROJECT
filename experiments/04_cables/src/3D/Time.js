@@ -1,11 +1,9 @@
-import EventEmitter from "events"
+import {EventEmitter} from 'events'
 import * as THREE from 'three'
 
 let time = null
 
 export class Time extends EventEmitter {
-  clock: THREE.Clock
-  
   constructor() {
     super()
 
