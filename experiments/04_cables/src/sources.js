@@ -3,11 +3,11 @@ export default [
   {
     name: "woodFloor",
     type: "texture",
-    path: "textures/wood_floor.jpg"
+    path: "/textures/wood_floor.jpg"
   },
   {
     name: "Desk",
     type: "gltfModel",
-    path: "models/Desk/Desk.glb"
+    path: "/models/Desk/Desk.glb"
   }
 ]

@@ -6,6 +6,7 @@ import sources from './sources'
 import { Resources } from "./3D/Resources"
 import { ClickAndDrag } from "./3D/Controls/ClickAndDrag"
 import { Sizes } from "./3D/Sizes"
+import { Time } from "./3D/Time"
 
 const ui = new dat.GUI()
 
@@ -14,9 +15,12 @@ const ui = new dat.GUI()
  */
 const canvas = document.querySelector("canvas.webgl")
 
+const time = new Time();
+
 const scene = new THREE.Scene()
 
 const resources = new Resources(sources)
+
 
 /**
  * Sizes
@@ -47,6 +51,11 @@ scene.add(camera)
 ui.add(camera, 'fov').min(15).max(100).step(1).name('Camera FOV').onChange(() => {
   camera.updateProjectionMatrix()
 })
+
+/**
+ * Controls
+ */
+const controls = new ClickAndDrag(camera, canvas)
 
 /**
  * Lights
@@ -98,6 +107,7 @@ resources.on('loaded', () => {
   )
   cube.position.set(0, deskHeight + cubeSize/2, 0)
   scene.add(cube)
+  controls.grabbables.push(cube)
 
   camera.lookAt(cube.position)
 })
@@ -111,26 +121,6 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-/**
- * Controls
- */
-const controls = new ClickAndDrag(camera, canvas, sizes)
-
-/**
- * Animate
- */
-const clock = new THREE.Clock()
-
-const tick = () => {
-  const elapsedTime = clock.getElapsedTime()
-
-  // Update controls
-
-  // Render
+time.on('tick', () => {
   renderer.render(scene, camera)
-
-  // Call tick again on the next frame
-  window.requestAnimationFrame(tick)
-}
-
-tick()
+})
