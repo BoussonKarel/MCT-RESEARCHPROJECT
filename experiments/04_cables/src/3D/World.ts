@@ -89,23 +89,6 @@ export class World {
 
     // Desk
     const desk = new Desk()
-
-    // Cube
-    const cube = new SimpleCube()
-    cube.mesh.position.set(
-      0,
-      desk.deskHeight + cube.geometry.parameters.height / 2,
-      0
-    )
-
-    // Cube
-    const solidCube = new SimpleCube(0.1, new THREE.Color(0x22ff22))
-    solidCube.mesh.position.copy(cube.mesh.position)
-    solidCube.mesh.position.x += 0.3
-
-    // Debugging
-    console.log(cube.mesh.uuid)
-    console.log(solidCube.mesh.uuid)
   }
 
   addLights() {
