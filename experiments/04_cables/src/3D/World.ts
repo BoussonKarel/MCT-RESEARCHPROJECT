@@ -8,7 +8,7 @@ import { Time } from "./Time"
 
 import { SimpleCube } from './Objects/SimpleCube'
 
-let world = null
+let world: World = null
 
 export class World {
   canvas: Element
@@ -70,6 +70,9 @@ export class World {
     // Resources
     this.resources = new Resources(sources)
     this.resources.on("loaded", () => this.addObjects())
+
+    // Lights
+    this.addLights()
   }
 
   addObjects() {
@@ -114,5 +117,16 @@ export class World {
     console.log(solidCube.mesh.uuid)
 
     this.camera.lookAt(cube.mesh.position)
+  }
+
+  addLights() {
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
+    this.scene.add(ambientLight)
+
+    const directionalLight = new THREE.DirectionalLight(0xffffd2, 0.5)
+    const lampPosition = new THREE.Vector3(0, 2, 0)
+    directionalLight.position.copy(lampPosition)
+    directionalLight.lookAt(new THREE.Vector3(0, 1, 0))
+    this.scene.add(directionalLight)
   }
 }
