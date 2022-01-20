@@ -5,12 +5,12 @@ import { World } from "../World"
 
 export class Desk {
   world: World
+
   deskHeight: number
   mesh: THREE.Mesh
 
   physics: Physics
   physicsBody: CANNON.Body
-
 
   constructor() {
     this.world = new World()

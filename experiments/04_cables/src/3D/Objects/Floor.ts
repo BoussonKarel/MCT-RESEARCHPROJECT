@@ -5,6 +5,7 @@ import { World } from "../World"
 
 export class Floor {
   world: World
+  
   geometry: THREE.PlaneGeometry
   material: THREE.MeshBasicMaterial
   mesh: THREE.Mesh

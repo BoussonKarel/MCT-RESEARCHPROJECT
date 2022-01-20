@@ -83,7 +83,6 @@ export class World {
   }
 
   addObjects() {
-    console.log("adding objects")
     // Floor
     const floor = new Floor()
 

@@ -20,3 +20,4 @@ ui.add(world.camera, 'zoom').min(1).max(5).step(.05).name('Camera Zoom').onChang
 const debugSpawner = new DebugSpawner()
 
 ui.add(debugSpawner, 'addCube')
+ui.add(debugSpawner, 'addCable')

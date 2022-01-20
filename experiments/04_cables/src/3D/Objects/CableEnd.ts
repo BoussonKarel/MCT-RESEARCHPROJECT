@@ -9,7 +9,7 @@ interface SimpleCubeOptions {
   color?
 }
 
-export class SimpleCube {
+export class CableEnd {
   world: World;
   
   geometry: THREE.BoxGeometry;
@@ -19,37 +19,24 @@ export class SimpleCube {
   physics: Physics;
   physicsBody: CANNON.Body;
 
-  constructor(options: SimpleCubeOptions) {
-    options = {
-      size: 0.1, // default
-      color: new THREE.Color('red'), // default
-      ...options // user parameters
-    }
-
+  constructor() {
     // ThreeJS
     this.world = new World()
 
-    this.geometry = new THREE.BoxGeometry(options.size, options.size, options.size);
+    this.geometry = new THREE.BoxGeometry(0.015, 0.015, 0.015);
 
     this.material = new THREE.MeshStandardMaterial({
-      color: options.color
+      color: new THREE.Color(0x222222)
     })
     
     this.mesh = new THREE.Mesh(this.geometry, this.material)
 
-    if (options.position) this.mesh.position.copy(options.position)
+    // if (options.position) this.mesh.position.copy(options.position)
 
     this.world.scene.add(this.mesh)
     this.world.grabbables.push(this.mesh)
 
     // Physics
     this.physics = new Physics()
-    
-    this.physicsBody = new CANNON.Body({
-      mass: 0.2, // kg
-      shape: new CANNON.Box(new CANNON.Vec3(options.size/2, options.size/2, options.size/2)),
-    })
-    
-    this.physics.addToPhysicsWorld(this.mesh, this.physicsBody)
   }
 }
