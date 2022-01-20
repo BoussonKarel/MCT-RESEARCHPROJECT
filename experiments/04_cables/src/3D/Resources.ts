@@ -17,7 +17,7 @@ export class Resources extends EventEmitter {
   gltfLoader: GLTFLoader
   cubeTextureLoader: THREE.CubeTextureLoader
 
-  constructor(sources) {
+  constructor(sources: any[]) {
     super()
 
     if (resources) return resources
@@ -37,30 +37,31 @@ export class Resources extends EventEmitter {
   }
 
   loadResources() {
+    console.log("Loading resources")
     for (const source of this.sources) {
-      switch (source.type) {
-        case "texture":
-          this.textureLoader.load(source.path, (file) => {
-            this.items[source.name] = file
-            this.loaded++
-          })
-          break;
-        case "gltfModel":
-          this.gltfLoader.load(source.path, (file) => {
-            this.items[source.name] = file
-            this.loaded++
-          })
-          break;
-        case "cubeTexture":
-          this.cubeTextureLoader.load(source.path, (file) => {
-            this.items[source.name] = file
-            this.loaded++
-          })
-          break;
+      if (source.type === "texture") {
+        this.textureLoader.load(source.path, (file) => {
+          this.items[source.name] = file
+          
+          this.loaded++
+          if (this.loaded === this.toLoad) this.emit('loaded')
+        })
       }
+      if (source.type == "gltfModel") {
+        this.gltfLoader.load(source.path, (file) => {
+          this.items[source.name] = file
 
-      if (this.loaded === this.toLoad) {
-        this.emit('loaded')
+          this.loaded++
+          if (this.loaded === this.toLoad) this.emit('loaded')
+        })
+      }
+      if (source.type == "cubeTexture") {
+        this.cubeTextureLoader.load(source.path, (file) => {
+          this.items[source.name] = file
+
+          this.loaded++
+          if (this.loaded === this.toLoad) this.emit('loaded')
+        })
       }
     }
   }

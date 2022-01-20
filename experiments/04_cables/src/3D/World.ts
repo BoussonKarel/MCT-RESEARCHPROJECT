@@ -76,6 +76,7 @@ export class World {
   }
 
   addObjects() {
+    console.log("adding objects")
     // Floor
     const floorGeometry = new THREE.PlaneGeometry(5, 5)
     const floorMaterial = new THREE.MeshBasicMaterial()
