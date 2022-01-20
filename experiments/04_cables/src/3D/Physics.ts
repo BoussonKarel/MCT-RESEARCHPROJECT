@@ -37,8 +37,6 @@ export class Physics {
     this.physicsWorld.step(this.physicsClock.getDelta())
 
     for (const object of this.objects) {
-
-
       // Don't move if being dragged
       if (object.mesh === this.world.controls.selectedObject) {
         // Mesh to body (controls has the upperhand)
