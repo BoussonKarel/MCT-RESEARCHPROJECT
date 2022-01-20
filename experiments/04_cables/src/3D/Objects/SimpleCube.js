@@ -1,9 +1,9 @@
 import * as THREE from 'three'
-import { Resources } from '../Resources'
+import { World } from '../World'
 
 export class SimpleCube {
   constructor(size = 0.1, color = new THREE.Color('red')) {
-    // this.resources = new Resources()
+    this.world = new World()
 
     this.geometry = new THREE.BoxGeometry(size, size, size);
 
@@ -12,5 +12,8 @@ export class SimpleCube {
     })
     
     this.mesh = new THREE.Mesh(this.geometry, this.material)
+
+    this.world.scene.add(this.mesh)
+    this.world.grabbables.push(this.mesh)
   }
 }

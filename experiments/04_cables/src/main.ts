@@ -4,7 +4,7 @@ import * as dat from 'lil-gui'
 import * as THREE from 'three'
 import { World } from "./3D/World"
 
-const world = new World(document.querySelector('canvas.webgl'))
+const world = new World()
 
 const ui = new dat.GUI()
 

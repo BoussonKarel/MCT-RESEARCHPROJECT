@@ -19,13 +19,14 @@ export class World {
   scene: THREE.Scene
   controls: ClickAndDrag
   resources: Resources
+  grabbables: THREE.Object3D[]
 
-  constructor(canvas) {
+  constructor() {
     if (world) return world
     world = this
 
     // Canvas
-    this.canvas = canvas
+    this.canvas = document.querySelector('canvas.webgl')
 
     // Sizes
     this.sizes = new Sizes()
@@ -64,8 +65,12 @@ export class World {
     this.camera.position.set(0, 1.25, 0.75)
     this.scene.add(this.camera)
 
+    // Camera location
+    this.camera.lookAt(new THREE.Vector3(0, .73, 0))
+
     // Controls
     this.controls = new ClickAndDrag(this.camera, this.canvas)
+    this.grabbables = []
 
     // Resources
     this.resources = new Resources(sources)
@@ -105,19 +110,15 @@ export class World {
       deskHeight + cube.geometry.parameters.height / 2,
       0
     )
-    this.scene.add(cube.mesh)
-    this.controls.grabbables.push(cube.mesh)
 
     // Cube
     const solidCube = new SimpleCube(0.1, new THREE.Color(0x22ff22))
     solidCube.mesh.position.copy(cube.mesh.position)
     solidCube.mesh.position.x += 0.3
-    this.scene.add(solidCube.mesh)
 
+    // Debugging
     console.log(cube.mesh.uuid)
     console.log(solidCube.mesh.uuid)
-
-    this.camera.lookAt(cube.mesh.position)
   }
 
   addLights() {

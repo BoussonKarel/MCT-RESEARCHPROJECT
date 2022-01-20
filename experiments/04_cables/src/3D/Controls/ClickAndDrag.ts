@@ -1,8 +1,10 @@
 import * as THREE from "three"
 import { Sizes } from "../Sizes"
 import { Time } from "../Time"
+import { World } from "../World"
 
 export class ClickAndDrag {
+  world: World
   camera: THREE.PerspectiveCamera
   domElement: Element
   sizes: Sizes
@@ -10,7 +12,6 @@ export class ClickAndDrag {
   cursor: THREE.Vector2
   rightMouseDown: boolean = false
   movementAmplitude = 0.003
-  grabbables: THREE.Object3D[]
   raycaster: THREE.Raycaster = new THREE.Raycaster()
 
   selectedObject: THREE.Object3D
@@ -24,9 +25,10 @@ export class ClickAndDrag {
 
   constructor(
     camera: THREE.PerspectiveCamera,
-    domElement: Element,
-    grabbables = []
+    domElement: Element
   ) {
+    this.world = new World()
+    
     this.camera = camera
     this.camera.rotation.reorder("YXZ")
     this.domElement = domElement
@@ -42,8 +44,6 @@ export class ClickAndDrag {
 
     document.addEventListener("mousemove", (e) => this.moveEvent(e))
     document.addEventListener("wheel", (e) => this.scrollEvent(e))
-
-    this.grabbables = grabbables
 
     this.time.on('tick', () => {
       
@@ -79,7 +79,7 @@ export class ClickAndDrag {
       this.camera
     )
 
-    const intersects = this.raycaster.intersectObjects(this.grabbables)
+    const intersects = this.raycaster.intersectObjects(this.world.grabbables)
 
     // Use first object
     if (intersects.length > 0) {
