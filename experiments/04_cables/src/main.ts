@@ -21,3 +21,4 @@ const debugSpawner = new DebugSpawner()
 
 ui.add(debugSpawner, 'addCube')
 ui.add(debugSpawner, 'addCable')
+ui.add(debugSpawner, 'addUltrasone')

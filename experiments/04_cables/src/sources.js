@@ -9,5 +9,10 @@ export default [
     name: "Desk",
     type: "gltfModel",
     path: "/models/Desk/Desk.glb"
+  },
+  {
+    name: "Ultrasone",
+    type: "gltfModel",
+    path: "/models/Ultrasone/Ultrasone.glb"
   }
 ]
