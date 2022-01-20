@@ -1,9 +1,7 @@
-import * as THREE from "three"
-
-let physicsWorld = null
+let physicsWorld: PhysicsWorld = null
 
 export class PhysicsWorld {
-  constructor(sources) {
+  constructor() {
     if (physicsWorld) return physicsWorld
     physicsWorld = this
 

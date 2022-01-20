@@ -1,7 +1,12 @@
 import { EventEmitter } from "events"
 
-let sizes = null
+let sizes: Sizes = null
+
 export class Sizes extends EventEmitter {
+  width: number
+  height: number
+  pixelRatio: number
+
   constructor() {
     super()
 

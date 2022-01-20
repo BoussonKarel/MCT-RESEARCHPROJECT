@@ -1,9 +1,11 @@
 import {EventEmitter} from 'events'
 import * as THREE from 'three'
 
-let time = null
+let time: Time = null
 
 export class Time extends EventEmitter {
+  clock: THREE.Clock
+
   constructor() {
     super()
 
@@ -16,7 +18,7 @@ export class Time extends EventEmitter {
   }
 
   tick() {
-    const elapsedTime = this.clock.getElapsedTime()
+    // this.clock.getElapsedTime()
  
     // Update controls
     this.emit('tick')
