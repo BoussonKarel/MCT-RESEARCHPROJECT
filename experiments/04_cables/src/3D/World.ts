@@ -7,6 +7,8 @@ import { Sizes } from "./Sizes"
 import { Time } from "./Time"
 
 import { SimpleCube } from './Objects/SimpleCube'
+import { Floor } from "./Objects/Floor"
+import { Desk } from "./Objects/Desk"
 
 let world: World = null
 
@@ -83,31 +85,16 @@ export class World {
   addObjects() {
     console.log("adding objects")
     // Floor
-    const floorGeometry = new THREE.PlaneGeometry(5, 5)
-    const floorMaterial = new THREE.MeshBasicMaterial()
-
-    floorMaterial.map = this.resources.items["woodFloor"]
-    const floor = new THREE.Mesh(floorGeometry, floorMaterial)
-    floor.position.set(0, -0.001, 0)
-    floor.rotation.x = -Math.PI / 2
-    this.scene.add(floor)
+    const floor = new Floor()
 
     // Desk
-    const deskHeight = 0.73
-    const desk = this.resources.items["Desk"].scene.children[0]
-    // @ts-ignore
-    desk.children[0].geometry.center()
-    desk.scale.set(1 / 100, 1 / 100, 1 / 100) // From 73m to 73cm
-
-    desk.position.set(0, deskHeight * 0.5, 0)
-
-    this.scene.add(desk)
+    const desk = new Desk()
 
     // Cube
     const cube = new SimpleCube()
     cube.mesh.position.set(
       0,
-      deskHeight + cube.geometry.parameters.height / 2,
+      desk.deskHeight + cube.geometry.parameters.height / 2,
       0
     )
 
