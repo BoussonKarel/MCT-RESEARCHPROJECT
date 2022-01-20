@@ -38,7 +38,7 @@ export class Physics {
 
     for (const object of this.objects) {
       // Don't move if being dragged
-      if (this.world.controls.selectedObject) {
+      if (object.mesh === this.world.controls.selectedObject) {
         // Mesh to body (controls has the upperhand)
         // @ts-ignore
         object.body.position.copy(object.mesh.position)

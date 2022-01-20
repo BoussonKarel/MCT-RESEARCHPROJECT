@@ -43,7 +43,7 @@ export class SimpleCube {
     this.physics = new Physics()
     
     this.physicsBody = new CANNON.Body({
-      mass: 1, // kg
+      mass: 0.2, // kg
       shape: new CANNON.Box(new CANNON.Vec3(options.size/2, options.size/2, options.size/2)),
     })
     
