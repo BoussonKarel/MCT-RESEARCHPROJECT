@@ -51,6 +51,8 @@ export class UltrasoneSensor {
   }
 
   measureDistances() {
+    // TODO: update raycaster's direction (according to rotation of sensor)
+
     // const physicsObjects = this.physics.objects
     // const physicsMeshes = []
     // for (const physicsObject of physicsObjects) {
