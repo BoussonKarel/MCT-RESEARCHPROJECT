@@ -11,16 +11,16 @@ export class ClickAndDrag {
   rightMouseDown: boolean = false
   movementAmplitude = 0.003
   grabbables: THREE.Object3D[]
-  raycaster: THREE.Raycaster
+  raycaster: THREE.Raycaster = new THREE.Raycaster()
+
   selectedObject: THREE.Object3D
+  objectRaycaster: THREE.Raycaster = new THREE.Raycaster()
 
   // Plane on which you can drag around
   plane = new THREE.Plane()
   pNormal = new THREE.Vector3(0,1,0) // Normal point of plane
-  planeIntersect = new THREE.Vector3() // Point of intersection w/ plane
-  pIntersect = new THREE.Vector3() // Point of intersection w/ object
-  shift = new THREE.Vector3() // Distance between object.position and points of intersection w/ object
-
+  planeIntersect = new THREE.Vector3() // Point of intersection ray w/ plane
+  shift = new THREE.Vector3() // Distance between intersect[x].object.position - intersect[x].point
 
   constructor(
     camera: THREE.PerspectiveCamera,
@@ -45,10 +45,8 @@ export class ClickAndDrag {
 
     this.grabbables = grabbables
 
-    this.raycaster = new THREE.Raycaster()
-
     this.time.on('tick', () => {
-      if (this.selectedObject) console.log(this.camera.position.distanceTo(this.selectedObject.position))
+      
     })
   }
 
@@ -85,9 +83,12 @@ export class ClickAndDrag {
 
     // Use first object
     if (intersects.length > 0) {
-      this.pIntersect.copy(intersects[0].point)
-      this.plane.setFromNormalAndCoplanarPoint(this.pNormal, this.pIntersect)
+      const pIntersect = intersects[0].point
+
+      // Add a horizontal plane slicing trough the intersection point
+      this.plane.setFromNormalAndCoplanarPoint(this.pNormal, pIntersect)
       this.shift.subVectors(intersects[0].object.position, intersects[0].point)
+
       this.selectedObject = intersects[0].object
     }
   }
@@ -115,7 +116,10 @@ export class ClickAndDrag {
       this.raycaster.setFromCamera(this.cursor, this.camera)
 
       if (this.selectedObject) {
+        // Copy the point of intersection ray w/ plane to this.planeIntersect
         this.raycaster.ray.intersectPlane(this.plane, this.planeIntersect)
+        // Move to the intersection point w/ the plane
+        // Adjust with the shift (no sudden bumps when clicking elsewhere)
         this.selectedObject.position.addVectors(this.planeIntersect, this.shift)
       }
     }

@@ -2,9 +2,14 @@ import {EventEmitter} from 'events'
 import * as THREE from "three"
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
+let resources = null
+
 export class Resources extends EventEmitter {
   constructor(sources) {
     super()
+
+    if (resources) return resources
+    resources = this
     
     this.sources = sources
     this.items = {}
