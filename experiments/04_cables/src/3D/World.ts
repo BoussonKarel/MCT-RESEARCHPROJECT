@@ -11,6 +11,15 @@ import { SimpleCube } from './Objects/SimpleCube'
 let world = null
 
 export class World {
+  canvas: Element
+  sizes: Sizes
+  camera: THREE.PerspectiveCamera
+  renderer: THREE.WebGLRenderer
+  time: Time
+  scene: THREE.Scene
+  controls: ClickAndDrag
+  resources: Resources
+
   constructor(canvas) {
     if (world) return world
     world = this
