@@ -37,12 +37,14 @@ export class Physics {
     this.physicsWorld.step(this.physicsClock.getDelta())
 
     for (const object of this.objects) {
+
+
       // Don't move if being dragged
       if (object.mesh === this.world.controls.selectedObject) {
         // Mesh to body (controls has the upperhand)
         // @ts-ignore
         object.body.position.copy(object.mesh.position)
-        // @ts-ignore
+          // @ts-ignore
         object.body.quaternion.copy(object.mesh.quaternion)
       } else {
         // Body position to mesh (physics has the upperhand)
@@ -58,6 +60,7 @@ export class Physics {
     this.physicsWorld.addBody(body)
 
     body.position.copy(mesh.position)
+    body.quaternion.copy(mesh.quaternion)
 
     this.objects.push({
       mesh,

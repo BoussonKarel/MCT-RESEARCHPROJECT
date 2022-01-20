@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import { World } from "../World";
 import { Cable } from "./Cable";
 import { SimpleCube } from "./SimpleCube";
@@ -10,7 +11,8 @@ export class DebugSpawner {
   }
 
   addCube() {
-    const cube = new SimpleCube({position: {x:0, y:2, z:0}})
+    const position = new THREE.Vector3(0, 0.76, 0)
+    const cube = new SimpleCube({position})
   }
   addCable() {
     const cable = new Cable()

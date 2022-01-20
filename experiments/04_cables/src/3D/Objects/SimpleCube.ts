@@ -4,9 +4,9 @@ import { Physics } from '../Physics';
 import { World } from '../World'
 
 interface SimpleCubeOptions {
-  position?
-  size?
-  color?
+  position?: THREE.Vector3
+  size?: number
+  color?: THREE.Color
 }
 
 export class SimpleCube {
@@ -19,7 +19,7 @@ export class SimpleCube {
   physics: Physics;
   physicsBody: CANNON.Body;
 
-  constructor(options: SimpleCubeOptions) {
+  constructor(options?: SimpleCubeOptions) {
     options = {
       size: 0.1, // default
       color: new THREE.Color('red'), // default
