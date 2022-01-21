@@ -159,6 +159,10 @@ export class ClickAndDrag {
       // UP - DOWN
       this.camera.rotation.x += event.movementY * this.movementAmplitude
 
+      // Don't look further than all the way up/down
+      this.camera.rotation.x = Math.min(Math.max(this.camera.rotation.x, -Math.PI/2), Math.PI/2)
+      
+
       // LEFT - RIGHT
       this.camera.rotation.y += event.movementX * this.movementAmplitude
     }
