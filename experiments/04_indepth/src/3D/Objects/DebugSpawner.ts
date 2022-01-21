@@ -12,7 +12,7 @@ export class DebugSpawner {
   }
 
   addCube() {
-    const position = new THREE.Vector3(0, 0.76, 0)
+    const position = new THREE.Vector3(0, 0.8, 0)
     const cube = new SimpleCube({position})
   }
 

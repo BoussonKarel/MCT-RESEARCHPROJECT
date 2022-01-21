@@ -24,7 +24,7 @@ export class ClickAndDrag {
   phNormal = new THREE.Vector3(0, 1, 0) // Normal point of plane (horizontal)
 
   verticalPlane = new THREE.Plane()
-  pvNormal = new THREE.Vector3(0,0,1)
+  pvNormal = new THREE.Vector3(0, 0, 1)
 
   planeIntersect = new THREE.Vector3() // Point of intersection ray w/ plane
   shift = new THREE.Vector3() // Distance between intersect[x].object.position - intersect[x].point
@@ -71,10 +71,7 @@ export class ClickAndDrag {
   disableContextMenu() {
     this.domElement.addEventListener(
       "contextmenu",
-      (e) => {
-        e.preventDefault()
-      },
-      false
+      (e) => e.preventDefault()
     )
   }
 
@@ -103,9 +100,10 @@ export class ClickAndDrag {
 
   keyEvents() {
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Shift") {
-        if (!this.shiftKeyDown) { // toggle shift, filter out repeating event
-          this.shiftKeyDown = true
+      if (e.key === "Shift" && !this.shiftKeyDown) {
+        this.shiftKeyDown = true
+        
+        if (this.leftMouseDown) {
           this.dragStart()
         }
       }
@@ -113,27 +111,28 @@ export class ClickAndDrag {
     document.addEventListener("keyup", (e) => {
       if (e.key === "Shift") {
         this.shiftKeyDown = false
-        if (this.leftMouseDown) this.dragStart()
+
+        if (this.leftMouseDown) {
+          this.dragStart()
+        }
       }
     })
   }
 
   setDragPlanes(objectPosition: THREE.Vector3, pIntersect: THREE.Vector3) {
     // Add a horizontal plane slicing trough point of intersection
-    this.horizontalPlane.setFromNormalAndCoplanarPoint(this.phNormal, pIntersect)
+    this.horizontalPlane.setFromNormalAndCoplanarPoint(
+      this.phNormal,
+      pIntersect
+    )
     // Add a vertical plane
     this.verticalPlane.setFromNormalAndCoplanarPoint(this.pvNormal, pIntersect)
-  
+
     // Difference between intersection point and position
     this.shift.subVectors(objectPosition, pIntersect)
   }
 
   dragStart() {
-    // Set cursor
-    this.world.canvas.classList.add('grabbing')
-    if (this.shiftKeyDown) this.world.canvas.classList.add('grabbing-y')
-    else this.world.canvas.classList.remove('grabbing-y')
-
     // Shoot ray and check for intersecting objects
     this.raycaster.setFromCamera(
       { x: this.cursor.x, y: this.cursor.y },
@@ -145,13 +144,21 @@ export class ClickAndDrag {
     if (intersects.length > 0) {
       // Set planes to go trough the intersection point
       this.setDragPlanes(intersects[0].object.position, intersects[0].point)
+
       // Set this object as selectedObject
       this.selectedObject = intersects[0].object
+
+      // Set cursor
+      // @ts-ignore
+      this.world.canvas.style.cursor = 'grabbing'
+      if (this.shiftKeyDown) this.world.canvas.style.cursor = 'move'
     }
   }
 
   dragEnd() {
-    this.world.canvas.classList.remove('grabbing', 'grabbing-y')
+    // Set cursor
+    // @ts-ignore
+    this.world.canvas.style.cursor = 'auto'
 
     this.selectedObject = undefined
   }
@@ -170,7 +177,7 @@ export class ClickAndDrag {
       // LEFT - RIGHT
       this.camera.rotation.y += event.movementX * this.movementAmplitude
     }
-    
+
     // if an object is selected
     if (this.selectedObject) {
       this.raycaster.setFromCamera(this.cursor, this.camera)

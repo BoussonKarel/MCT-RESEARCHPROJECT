@@ -11,6 +11,9 @@ export class Physics {
 
   lastElapsedTime: number
 
+  materials: {[key: string]: CANNON.Material} = {}
+  contactMaterials: CANNON.ContactMaterial[] = []
+
   objects: {
     mesh: THREE.Mesh,
     body: CANNON.Body
@@ -29,9 +32,19 @@ export class Physics {
 
     this.physicsClock = new THREE.Clock()
 
-    this.world.time.on('tick', () => this.updatePhysicsWorld())
+    this.materials.default = new CANNON.Material('default')
+    this.contactMaterials.push(new CANNON.ContactMaterial(
+      this.materials.default,
+      this.materials.default,
+      { friction: 0.1, restitution: 0.2 }
+    ))
+
+    this.physicsWorld.addContactMaterial(this.contactMaterials[0])
+    this.physicsWorld.defaultContactMaterial = this.contactMaterials[0]
 
     this.objects = []
+
+    this.world.time.on('tick', () => this.updatePhysicsWorld())
   }
 
   updatePhysicsWorld() {
