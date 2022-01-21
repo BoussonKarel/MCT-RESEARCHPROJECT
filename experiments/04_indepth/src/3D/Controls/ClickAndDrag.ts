@@ -49,7 +49,6 @@ export class ClickAndDrag {
 
     this.clickEvents()
     this.keyEvents()
-    
     document.addEventListener("mousemove", (e) => this.moveEvent(e))
     document.addEventListener("wheel", (e) => this.scrollEvent(e))
 
