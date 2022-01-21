@@ -5,6 +5,7 @@ import { World } from "../World"
 
 interface UltrasoneOptions {
   position?: THREE.Vector3
+  range?: number
 }
 
 export class UltrasoneSensor {
@@ -13,6 +14,7 @@ export class UltrasoneSensor {
   mesh: THREE.Mesh
 
   raycaster: THREE.Raycaster
+  arrowHelper: THREE.ArrowHelper
 
   physics: Physics
   physicsBody: CANNON.Body
@@ -20,6 +22,7 @@ export class UltrasoneSensor {
   constructor(options?: UltrasoneOptions) {
     options = {
       position: new THREE.Vector3(.5,.75,-0.25),
+      range: 4,
       ...options
     }
     this.world = new World()
@@ -38,10 +41,11 @@ export class UltrasoneSensor {
 
     const direction = new THREE.Vector3(0, 0, 1)
     const origin = new THREE.Vector3().copy(this.mesh.position)
-    this.raycaster = new THREE.Raycaster(origin, direction)
+    this.raycaster = new THREE.Raycaster(origin, direction, 0.1, options.range)
 
-    // const arrowHelper = new THREE.ArrowHelper(direction, origin)
-    // this.world.scene.add(arrowHelper)
+    this.arrowHelper = new THREE.ArrowHelper(direction, origin, options.range)
+    // this.arrowHelper.visible = false
+    this.world.scene.add(this.arrowHelper)
 
     // Physics
     this.physics = new Physics()
@@ -60,7 +64,7 @@ export class UltrasoneSensor {
     // }
     // const intersects = this.raycaster.intersectObjects(physicsMeshes)
 
-    const otherObjects = this.world.scene.children.filter(c => c!= this.mesh)
+    const otherObjects = this.world.scene.children.filter(c => c!= this.mesh && c != this.arrowHelper)
     const intersects = this.raycaster.intersectObjects(otherObjects)
 
     if (intersects.length > 0) {

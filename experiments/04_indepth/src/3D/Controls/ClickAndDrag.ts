@@ -10,7 +10,9 @@ export class ClickAndDrag {
   sizes: Sizes
   time: Time
   cursor: THREE.Vector2
+  leftMouseDown: boolean = false
   rightMouseDown: boolean = false
+  shiftKeyDown: boolean = false
   movementAmplitude = 0.003
   raycaster: THREE.Raycaster = new THREE.Raycaster()
 
@@ -18,17 +20,18 @@ export class ClickAndDrag {
   objectRaycaster: THREE.Raycaster = new THREE.Raycaster()
 
   // Plane on which you can drag around
-  plane = new THREE.Plane()
-  pNormal = new THREE.Vector3(0,1,0) // Normal point of plane
+  horizontalPlane = new THREE.Plane() // Horizontal plane
+  phNormal = new THREE.Vector3(0, 1, 0) // Normal point of plane (horizontal)
+
+  verticalPlane = new THREE.Plane()
+  pvNormal = new THREE.Vector3(0,0,1)
+
   planeIntersect = new THREE.Vector3() // Point of intersection ray w/ plane
   shift = new THREE.Vector3() // Distance between intersect[x].object.position - intersect[x].point
 
-  constructor(
-    camera: THREE.PerspectiveCamera,
-    domElement: Element
-  ) {
+  constructor(camera: THREE.PerspectiveCamera, domElement: Element) {
     this.world = new World()
-    
+
     this.camera = camera
     this.camera.rotation.reorder("YXZ")
     this.domElement = domElement
@@ -41,13 +44,28 @@ export class ClickAndDrag {
     this.disableContextMenu() // No more right click context menu
 
     this.clickEvents()
+    this.keyEvents()
 
     document.addEventListener("mousemove", (e) => this.moveEvent(e))
     document.addEventListener("wheel", (e) => this.scrollEvent(e))
 
-    this.time.on('tick', () => {
-      
-    })
+    const horizontalPlaneHelper = new THREE.PlaneHelper(
+      this.horizontalPlane,
+      2,
+      0xffff00
+    )
+    horizontalPlaneHelper.visible = false
+    this.world.scene.add(horizontalPlaneHelper)
+
+    const verticalPlaneHelper = new THREE.PlaneHelper(
+      this.verticalPlane,
+      2,
+      0xff0000
+    )
+    verticalPlaneHelper.visible = false
+    this.world.scene.add(verticalPlaneHelper)
+
+    this.time.on("tick", () => {})
   }
 
   disableContextMenu() {
@@ -62,17 +80,60 @@ export class ClickAndDrag {
 
   clickEvents() {
     window.addEventListener("mousedown", (e) => {
-      if (e.button === 0) this.dragStart()
-      if (e.button === 2) this.rightMouseDown = true
+      if (e.button === 0 && !this.leftMouseDown) {
+        this.leftMouseDown = true
+        this.dragStart()
+      }
+
+      if (e.button === 2 && !this.rightMouseDown) {
+        this.rightMouseDown = true
+      }
     })
 
     window.addEventListener("mouseup", (e) => {
-      if (e.button === 0) this.dragEnd()
-      if (e.button === 2) this.rightMouseDown = false
+      if (e.button === 0 && this.leftMouseDown) {
+        this.leftMouseDown = false
+        this.dragEnd()
+      }
+      if (e.button === 2 && this.rightMouseDown) {
+        this.rightMouseDown = false
+      }
     })
   }
 
+  keyEvents() {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Shift") {
+        if (!this.shiftKeyDown) { // toggle shift, filter out repeating event
+          this.shiftKeyDown = true
+          this.dragStart()
+        }
+      }
+    })
+    document.addEventListener("keyup", (e) => {
+      if (e.key === "Shift") {
+        this.shiftKeyDown = false
+        if (this.leftMouseDown) this.dragStart()
+      }
+    })
+  }
+
+  setDragPlanes(objectPosition: THREE.Vector3, pIntersect: THREE.Vector3) {
+    // Add a horizontal plane slicing trough point of intersection
+    this.horizontalPlane.setFromNormalAndCoplanarPoint(this.phNormal, pIntersect)
+    // Add a vertical plane
+    this.verticalPlane.setFromNormalAndCoplanarPoint(this.pvNormal, pIntersect)
+  
+    // Difference between intersection point and position
+    this.shift.subVectors(objectPosition, pIntersect)
+  }
+
   dragStart() {
+    // Set cursor
+    this.world.canvas.classList.add('grabbing')
+    if (this.shiftKeyDown) this.world.canvas.classList.add('grabbing-y')
+    else this.world.canvas.classList.remove('grabbing-y')
+
     // Shoot ray and check for intersecting objects
     this.raycaster.setFromCamera(
       { x: this.cursor.x, y: this.cursor.y },
@@ -81,19 +142,17 @@ export class ClickAndDrag {
 
     const intersects = this.raycaster.intersectObjects(this.world.grabbables)
 
-    // Use first object
     if (intersects.length > 0) {
-      const pIntersect = intersects[0].point
-
-      // Add a horizontal plane slicing trough the intersection point
-      this.plane.setFromNormalAndCoplanarPoint(this.pNormal, pIntersect)
-      this.shift.subVectors(intersects[0].object.position, intersects[0].point)
-
+      // Set planes to go trough the intersection point
+      this.setDragPlanes(intersects[0].object.position, intersects[0].point)
+      // Set this object as selectedObject
       this.selectedObject = intersects[0].object
     }
   }
 
   dragEnd() {
+    this.world.canvas.classList.remove('grabbing', 'grabbing-y')
+
     this.selectedObject = undefined
   }
 
@@ -111,17 +170,26 @@ export class ClickAndDrag {
       // LEFT - RIGHT
       this.camera.rotation.y += event.movementX * this.movementAmplitude
     }
-
+    
+    // if an object is selected
     if (this.selectedObject) {
       this.raycaster.setFromCamera(this.cursor, this.camera)
 
-      if (this.selectedObject) {
-        // Copy the point of intersection ray w/ plane to this.planeIntersect
-        this.raycaster.ray.intersectPlane(this.plane, this.planeIntersect)
-        // Move to the intersection point w/ the plane
-        // Adjust with the shift (no sudden bumps when clicking elsewhere)
-        this.selectedObject.position.addVectors(this.planeIntersect, this.shift)
+      if (this.shiftKeyDown) {
+        this.raycaster.ray.intersectPlane(
+          this.verticalPlane,
+          this.planeIntersect
+        )
+      } else {
+        this.raycaster.ray.intersectPlane(
+          this.horizontalPlane,
+          this.planeIntersect
+        )
       }
+
+      // Move to the intersection point w/ the plane
+      // Adjust with the shift (no sudden bumps when clicking elsewhere)
+      this.selectedObject.position.addVectors(this.planeIntersect, this.shift)
     }
   }
 
@@ -132,7 +200,5 @@ export class ClickAndDrag {
     this.camera.updateProjectionMatrix()
   }
 
-  updateRaycaster() {
-    
-  }
+  updateRaycaster() {}
 }

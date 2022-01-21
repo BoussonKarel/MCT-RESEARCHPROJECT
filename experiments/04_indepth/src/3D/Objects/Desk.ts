@@ -2,6 +2,7 @@ import * as THREE from "three"
 import * as CANNON from "cannon-es"
 import { Physics } from "../Physics"
 import { World } from "../World"
+import { AxesHelper } from "three"
 
 export class Desk {
   world: World
@@ -27,6 +28,9 @@ export class Desk {
     this.mesh.position.set(0, 0 + this.deskHeight/2, 0)
 
     this.world.scene.add(this.mesh)
+
+    const axesHelper = new AxesHelper(5)
+    this.mesh.add(axesHelper)
 
     // ThreeJS to Physics
     this.mesh.geometry.computeBoundingBox()

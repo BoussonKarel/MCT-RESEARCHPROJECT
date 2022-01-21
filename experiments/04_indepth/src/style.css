@@ -18,6 +18,14 @@ body
     outline: none;
 }
 
+.grabbing {
+    cursor: grabbing;
+}
+
+.grabbing.grabbing-y {
+    cursor: move;
+}
+
 .paused {
     display: none;
 
