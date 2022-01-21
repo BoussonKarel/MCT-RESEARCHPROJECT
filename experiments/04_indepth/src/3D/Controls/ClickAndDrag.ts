@@ -41,40 +41,23 @@ export class ClickAndDrag {
 
     this.cursor = new THREE.Vector2()
 
-    this.disableContextMenu() // No more right click context menu
-
-    this.clickEvents()
-    this.keyEvents()
-
-    document.addEventListener("mousemove", (e) => this.moveEvent(e))
-    document.addEventListener("wheel", (e) => this.scrollEvent(e))
-
-    const horizontalPlaneHelper = new THREE.PlaneHelper(
-      this.horizontalPlane,
-      2,
-      0xffff00
-    )
-    horizontalPlaneHelper.visible = false
-    this.world.scene.add(horizontalPlaneHelper)
-
-    const verticalPlaneHelper = new THREE.PlaneHelper(
-      this.verticalPlane,
-      2,
-      0xff0000
-    )
-    verticalPlaneHelper.visible = false
-    this.world.scene.add(verticalPlaneHelper)
-
-    this.time.on("tick", () => {})
-  }
-
-  disableContextMenu() {
+    // Disable context menu (on right click)
     this.domElement.addEventListener(
       "contextmenu",
       (e) => e.preventDefault()
     )
+
+    this.clickEvents()
+    this.keyEvents()
+    
+    document.addEventListener("mousemove", (e) => this.moveEvent(e))
+    document.addEventListener("wheel", (e) => this.scrollEvent(e))
+
+    this.time.on("tick", () => {})
   }
 
+  
+  //#region EventListeners
   clickEvents() {
     window.addEventListener("mousedown", (e) => {
       if (e.button === 0 && !this.leftMouseDown) {
@@ -102,7 +85,7 @@ export class ClickAndDrag {
     document.addEventListener("keydown", (e) => {
       if (e.key === "Shift" && !this.shiftKeyDown) {
         this.shiftKeyDown = true
-        
+
         if (this.leftMouseDown) {
           this.dragStart()
         }
@@ -118,8 +101,10 @@ export class ClickAndDrag {
       }
     })
   }
+  //#endregion
 
-  setDragPlanes(objectPosition: THREE.Vector3, pIntersect: THREE.Vector3) {
+  //#region Dragging
+  setPlanes(objectPosition: THREE.Vector3, pIntersect: THREE.Vector3) {
     // Add a horizontal plane slicing trough point of intersection
     this.horizontalPlane.setFromNormalAndCoplanarPoint(
       this.phNormal,
@@ -143,7 +128,7 @@ export class ClickAndDrag {
 
     if (intersects.length > 0) {
       // Set planes to go trough the intersection point
-      this.setDragPlanes(intersects[0].object.position, intersects[0].point)
+      this.setPlanes(intersects[0].object.position, intersects[0].point)
 
       // Set this object as selectedObject
       this.selectedObject = intersects[0].object
@@ -151,6 +136,7 @@ export class ClickAndDrag {
       // Set cursor
       // @ts-ignore
       this.world.canvas.style.cursor = 'grabbing'
+      // @ts-ignore
       if (this.shiftKeyDown) this.world.canvas.style.cursor = 'move'
     }
   }
@@ -199,13 +185,13 @@ export class ClickAndDrag {
       this.selectedObject.position.addVectors(this.planeIntersect, this.shift)
     }
   }
+  //#endregion
 
-  // Zoom
+  //#region Zoom
   scrollEvent(event: WheelEvent) {
     const zoomValue = this.camera.zoom - event.deltaY / 100 / 10
     this.camera.zoom = Math.min(Math.max(zoomValue, 1), 5)
     this.camera.updateProjectionMatrix()
   }
-
-  updateRaycaster() {}
+  //#endregion
 }
