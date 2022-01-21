@@ -23,7 +23,8 @@ export class Physics {
     this.world = new World()
 
     this.physicsWorld = new CANNON.World({
-      gravity: new CANNON.Vec3(0, -9.82, 0)
+      // gravity: new CANNON.Vec3(0, -9.82, 0)
+      gravity: new CANNON.Vec3(0, -3, 0)
     })
 
     this.physicsClock = new THREE.Clock()
@@ -37,15 +38,17 @@ export class Physics {
     this.physicsWorld.step(this.physicsClock.getDelta())
 
     for (const object of this.objects) {
-      // Don't move if being dragged
+      // Being dragged
+      // --> 3D world to Physics world
       if (object.mesh === this.world.controls.selectedObject) {
-        // Mesh to body (controls has the upperhand)
         // @ts-ignore
         object.body.position.copy(object.mesh.position)
-          // @ts-ignore
+        // @ts-ignore
         object.body.quaternion.copy(object.mesh.quaternion)
-      } else {
-        // Body position to mesh (physics has the upperhand)
+      }
+      // Not being dragged
+      // --> Physics world to 3D world
+      else {
         // @ts-ignore
         object.mesh.position.copy(object.body.position)
         // @ts-ignore

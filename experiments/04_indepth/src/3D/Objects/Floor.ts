@@ -24,7 +24,7 @@ export class Floor {
 
     this.mesh = new THREE.Mesh(this.geometry, this.material)
 
-    this.mesh.position.set(0, -0.001, 0)
+    this.mesh.position.set(0, 0, 0)
     this.mesh.rotation.x = -Math.PI / 2
 
     this.world.scene.add(this.mesh)
