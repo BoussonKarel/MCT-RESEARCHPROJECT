@@ -1,4 +1,6 @@
 # Prof. Dr. Jelle Damenet
+https://studenthowest-my.sharepoint.com/personal/andrei_lavrenov_student_howest_be/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fandrei%5Flavrenov%5Fstudent%5Fhowest%5Fbe%2FDocuments%2FOpnamen%2FResearchproject%20%2D%203MCT%2D20220124%5F090135%2DMeeting%20Recording%2Emp4&parent=%2Fpersonal%2Fandrei%5Flavrenov%5Fstudent%5Fhowest%5Fbe%2FDocuments%2FOpnamen&wdOrigin=OFFICECOM%2DWEB%2EMAIN%2EOTHER&ct=1643027228922&cid=fdef7ca4%2Dcf09%2D43cb%2D93d4%2D06bc7e2c93db
+
 **Human Interface Technology:** Hoe XR en Biometrische data innovatie kunnen ondersteunen
 
 ## Inleiding
