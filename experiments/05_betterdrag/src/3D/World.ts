@@ -9,10 +9,12 @@ import { Time } from "./Time"
 import { SimpleCube } from './Objects/SimpleCube'
 import { Floor } from "./Objects/Floor"
 import { Desk } from "./Objects/Desk"
+import { Debug } from "./Debug"
 
 let world: World = null
 
 export class World {
+  debug: Debug
   canvas: Element
   sizes: Sizes
   camera: THREE.PerspectiveCamera
@@ -26,6 +28,9 @@ export class World {
   constructor() {
     if (world) return world
     world = this
+
+    // Debug
+    this.debug = new Debug()
 
     // Canvas
     this.canvas = document.querySelector('canvas.webgl')
@@ -83,6 +88,20 @@ export class World {
 
     // Lights
     this.addLights()
+
+    this.setDebugOptions()
+  }
+
+  setDebugOptions() {
+    if (this.debug.active) {
+      this.debug.ui.add(this.camera, 'fov').min(15).max(100).step(1).name('Camera FOV').onChange(() => {
+        world.camera.updateProjectionMatrix()
+      })
+      
+      this.debug.ui.add(this.camera, 'zoom').min(1).max(5).step(.05).name('Camera Zoom').onChange(() => {
+        world.camera.updateProjectionMatrix()
+      })
+    }
   }
 
   addObjects() {

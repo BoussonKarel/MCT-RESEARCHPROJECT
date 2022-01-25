@@ -3,6 +3,8 @@ import { BaseObject } from "./BaseObject"
 
 let instance: UltrasoneSensor = null
 
+const arrowHelperVisible = true
+
 interface Range {
   min: number
   max: number
@@ -89,6 +91,7 @@ export class UltrasoneSensor extends BaseObject {
 
     this.arrowHelper.position.copy(this.mesh.position)
     this.arrowHelper.setDirection(direction)
+    this.arrowHelper.visible = arrowHelperVisible
 
     this.raycaster.set(this.mesh.position, direction)
   }
