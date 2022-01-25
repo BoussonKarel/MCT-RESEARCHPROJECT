@@ -23,6 +23,11 @@ export class BaseObject {
   finishConstructor() {
     // needs to be done after the child class constructor()
     this.mesh.userData.parent = this
+
+    // Add mesh to scene
+    this.world.scene.add(this.mesh)
+    // Add physics body to physics world
+    if (this.physicsBody) this.physics.addToPhysicsWorld(this.mesh, this.physicsBody)
   }
 
   setPR(position, rotation) {
@@ -62,7 +67,5 @@ export class BaseObject {
         new CANNON.Vec3(dimensions.x/2, dimensions.y/2, dimensions.z/2)
         ),
     })
-    
-    this.physics.addToPhysicsWorld(this.mesh, this.physicsBody)
   }
 }

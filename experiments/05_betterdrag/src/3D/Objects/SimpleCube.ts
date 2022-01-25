@@ -23,30 +23,37 @@ export class SimpleCube extends BaseObject {
     }
 
     super()
+
     // ThreeJS
-    this.geometry = new THREE.BoxGeometry(
-      options.size,
-      options.size,
-      options.size
-    )
-
-    this.material = new THREE.MeshStandardMaterial({
-      color: options.color,
-    })
-
-    this.mesh = new THREE.Mesh(this.geometry, this.material)
-    
-
-    if (options.position) this.mesh.position.copy(options.position)
-
-    this.mesh.userData.parent = this
-    this.world.scene.add(this.mesh)
-    this.world.grabbables.push(this.mesh)
+    this.setup3D(options)
 
     // Physics
     this.createSimplePhysicsBox()
 
     // Wrap things up in parent class
     this.finishConstructor()
+  }
+
+  setup3D(options: SimpleCubeOptions) {
+    // Geometry
+    this.geometry = new THREE.BoxGeometry(
+      options.size,
+      options.size,
+      options.size
+    )
+
+    // Material
+    this.material = new THREE.MeshStandardMaterial({
+      color: options.color,
+    })
+
+    // Mesh
+    this.mesh = new THREE.Mesh(this.geometry, this.material)
+    
+    // Transform
+    if (options.position) this.mesh.position.copy(options.position)
+
+    // Make grabbable
+    this.world.grabbables.push(this.mesh)
   }
 }
