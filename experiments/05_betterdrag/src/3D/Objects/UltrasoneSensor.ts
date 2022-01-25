@@ -2,7 +2,7 @@ import * as THREE from "three"
 import * as CANNON from "cannon-es"
 import { Physics } from "../Physics"
 import { World } from "../World"
-import { BaseObject } from "./Object"
+import { BaseObject } from "./BaseObject"
 
 let instance: UltrasoneSensor = null
 
