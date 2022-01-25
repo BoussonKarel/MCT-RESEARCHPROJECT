@@ -39,8 +39,7 @@ export class Desk {
       this.mesh.geometry.boundingBox.max.y - this.mesh.geometry.boundingBox.min.y,
       this.mesh.geometry.boundingBox.max.z - this.mesh.geometry.boundingBox.min.z
     )
-
-    cannonVec.scale(1/200, cannonVec)
+    cannonVec.scale(1/200, cannonVec) // Scale 1/100 and 1/2 because we need halfExtents
 
     // Physics
     this.physics = new Physics()

@@ -36,7 +36,7 @@ export class Physics {
     this.contactMaterials.push(new CANNON.ContactMaterial(
       this.materials.default,
       this.materials.default,
-      { friction: 0.1, restitution: 0.2 }
+      { friction: 10.0, restitution: 0.0, contactEquationRelaxation: 10.0, frictionEquationStiffness: 1 }
     ))
 
     this.physicsWorld.addContactMaterial(this.contactMaterials[0])
@@ -48,6 +48,7 @@ export class Physics {
   }
 
   updatePhysicsWorld() {
+    // return;
     this.physicsWorld.step(this.physicsClock.getDelta())
 
     for (const object of this.objects) {

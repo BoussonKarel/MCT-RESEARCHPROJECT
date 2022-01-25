@@ -50,6 +50,9 @@ export class World {
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
     })
+
+    this.renderer.shadowMap.enabled = true
+
     this.renderer.setSize(this.sizes.width, this.sizes.height)
     this.renderer.setPixelRatio(this.sizes.pixelRatio)
 
@@ -64,7 +67,7 @@ export class World {
       0.1,
       100
     )
-    this.camera.position.set(0, 1.25, 0.75)
+    this.camera.position.set(0, 1.5, 0.5)
     this.scene.add(this.camera)
 
     // Camera location
@@ -94,10 +97,9 @@ export class World {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
     this.scene.add(ambientLight)
 
-    const directionalLight = new THREE.DirectionalLight(0xffffd2, 0.5)
+    const directionalLight = new THREE.DirectionalLight(0xffffd2, .5)
     const lampPosition = new THREE.Vector3(0, 2, 0)
     directionalLight.position.copy(lampPosition)
-    directionalLight.lookAt(new THREE.Vector3(0, 1, 0))
     this.scene.add(directionalLight)
   }
 }

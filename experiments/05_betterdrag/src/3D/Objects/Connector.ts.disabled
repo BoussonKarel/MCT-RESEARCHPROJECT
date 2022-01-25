@@ -3,13 +3,18 @@ import * as CANNON from 'cannon-es'
 import { Physics } from '../Physics';
 import { World } from '../World'
 
-interface SimpleCubeOptions {
-  position?: THREE.Vector3
-  size?: number
-  color?: THREE.Color
+enum ConnectorType {
+  FEMALE = 0,
+  MALE = 1
 }
 
-export class SimpleCube {
+interface ConnectorOptions {
+  position?: THREE.Vector3
+  size?: number
+  type: ConnectorType
+}
+
+export class Connector {
   world: World;
   
   geometry: THREE.BoxGeometry;
@@ -19,10 +24,11 @@ export class SimpleCube {
   physics: Physics;
   physicsBody: CANNON.Body;
 
-  constructor(options?: SimpleCubeOptions) {
+  constructor(options?: ConnectorOptions) {
     options = {
-      size: 0.1, // default
-      color: new THREE.Color('red'), // default
+      position: new THREE.Vector3(0, 0.8, 0),
+      size: 0.03,
+      type: ConnectorType.MALE,
       ...options // user parameters
     }
 
@@ -32,12 +38,12 @@ export class SimpleCube {
     this.geometry = new THREE.BoxGeometry(options.size, options.size, options.size);
 
     this.material = new THREE.MeshStandardMaterial({
-      color: options.color
+      color: options.type === ConnectorType.MALE ? "grey" : "yellow"
     })
     
     this.mesh = new THREE.Mesh(this.geometry, this.material)
     this.mesh.userData["parent"] = this
-    
+
     console.log(this.mesh)
 
     if (options.position) this.mesh.position.copy(options.position)
@@ -54,5 +60,16 @@ export class SimpleCube {
     })
     
     this.physics.addToPhysicsWorld(this.mesh, this.physicsBody)
+  }
+
+  stickTo(otherConnector: Connector) {
+    const localPivotA = new CANNON.Vec3(0,1,0)
+    const localPivotB = new CANNON.Vec3(0,-1,0)
+
+    const constraint = new CANNON.PointToPointConstraint(
+      this.physicsBody, localPivotA, otherConnector.physicsBody, localPivotB
+    )
+
+    this.physics.physicsWorld.addConstraint(constraint)
   }
 }

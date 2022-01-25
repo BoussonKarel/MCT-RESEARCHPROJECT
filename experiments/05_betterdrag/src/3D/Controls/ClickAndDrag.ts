@@ -13,10 +13,11 @@ export class ClickAndDrag {
   leftMouseDown: boolean = false
   rightMouseDown: boolean = false
   shiftKeyDown: boolean = false
-  movementAmplitude = 0.003
+  movementAmplitude = 0.002
   raycaster: THREE.Raycaster = new THREE.Raycaster()
 
   selectedObject: THREE.Object3D
+  selectedMinY: number
   objectRaycaster: THREE.Raycaster = new THREE.Raycaster()
 
   // Plane on which you can drag around
@@ -27,7 +28,12 @@ export class ClickAndDrag {
   pvNormal = new THREE.Vector3(0, 0, 1)
 
   planeIntersect = new THREE.Vector3() // Point of intersection ray w/ plane
+  diffY = 0.05
   shift = new THREE.Vector3() // Distance between intersect[x].object.position - intersect[x].point
+  pIntersect = new THREE.Vector3() 
+
+  // Check if it's connectable with something
+  connectableWith: THREE.Object3D<THREE.Event>
 
   constructor(camera: THREE.PerspectiveCamera, domElement: Element) {
     this.world = new World()
@@ -49,7 +55,7 @@ export class ClickAndDrag {
 
     this.clickEvents()
     this.keyEvents()
-    document.addEventListener("mousemove", (e) => this.moveEvent(e))
+    document.addEventListener("mousemove", (e) => this.mouseMoveEvent(e))
     document.addEventListener("wheel", (e) => this.scrollEvent(e))
 
     this.time.on("tick", () => {})
@@ -72,7 +78,7 @@ export class ClickAndDrag {
     window.addEventListener("mouseup", (e) => {
       if (e.button === 0 && this.leftMouseDown) {
         this.leftMouseDown = false
-        this.dragEnd()
+        this.dragRelease()
       }
       if (e.button === 2 && this.rightMouseDown) {
         this.rightMouseDown = false
@@ -84,39 +90,20 @@ export class ClickAndDrag {
     document.addEventListener("keydown", (e) => {
       if (e.key === "Shift" && !this.shiftKeyDown) {
         this.shiftKeyDown = true
-
-        if (this.leftMouseDown) {
-          this.dragStart()
-        }
+        if (this.leftMouseDown) this.dragStart(true)
       }
     })
     document.addEventListener("keyup", (e) => {
       if (e.key === "Shift") {
         this.shiftKeyDown = false
-
-        if (this.leftMouseDown) {
-          this.dragStart()
-        }
+        if (this.leftMouseDown) this.dragStart(true)
       }
     })
   }
   //#endregion
 
-  //#region Dragging
-  setPlanes(objectPosition: THREE.Vector3, pIntersect: THREE.Vector3) {
-    // Add a horizontal plane slicing trough point of intersection
-    this.horizontalPlane.setFromNormalAndCoplanarPoint(
-      this.phNormal,
-      pIntersect
-    )
-    // Add a vertical plane
-    this.verticalPlane.setFromNormalAndCoplanarPoint(this.pvNormal, pIntersect)
-
-    // Difference between intersection point and position
-    this.shift.subVectors(objectPosition, pIntersect)
-  }
-
-  dragStart() {
+  //#region Drag
+  dragStart(update = false) {
     // Shoot ray and check for intersecting objects
     this.raycaster.setFromCamera(
       { x: this.cursor.x, y: this.cursor.y },
@@ -126,75 +113,83 @@ export class ClickAndDrag {
     const intersects = this.raycaster.intersectObjects(this.world.grabbables)
 
     if (intersects.length > 0) {
-      // Set planes to go trough the intersection point
-      this.setPlanes(intersects[0].object.position, intersects[0].point)
+      if (!update) {
+        // If it's the first time, lift it up a bit
+        intersects[0].object.position.y += this.diffY
 
-      // Set this object as selectedObject
+        this.selectedMinY = intersects[0].object.position.y
+      }
+
+      // Set selected object
+      this.pIntersect = intersects[0].point
       this.selectedObject = intersects[0].object
+      this.shift.subVectors(intersects[0].object.position, intersects[0].point)
 
-      // Set cursor
-      // @ts-ignore
-      this.world.canvas.style.cursor = 'grabbing'
-      // @ts-ignore
-      if (this.shiftKeyDown) this.world.canvas.style.cursor = 'move'
+      // Add a horizontal plane slicing trough point of intersection
+      this.horizontalPlane.setFromNormalAndCoplanarPoint(this.phNormal, this.pIntersect)
+
+      // Add a vertical plane
+      this.verticalPlane.setFromNormalAndCoplanarPoint(this.pvNormal, this.pIntersect)
     }
   }
 
-  dragEnd() {
-    // Set cursor
-    // @ts-ignore
-    this.world.canvas.style.cursor = 'auto'
-
-    this.selectedObject = undefined
+  dragRelease() {
+    this.selectedObject = null
   }
 
-  // Move, set cursor coords
-  moveEvent(event: MouseEvent) {
+  dragAround() {
+    this.raycaster.setFromCamera(this.cursor, this.camera)
+
+    if (this.shiftKeyDown) {
+      this.raycaster.ray.intersectPlane(
+        this.verticalPlane,
+        this.planeIntersect
+      )
+    } else {
+      this.raycaster.ray.intersectPlane(
+        this.horizontalPlane,
+        this.planeIntersect
+      )
+    }
+
+    // Move to intersection point w/ the plane
+    // Adjust with the shift
+    this.selectedObject.position.addVectors(this.planeIntersect, this.shift)
+    this.selectedObject.position.y = Math.max(this.selectedObject.position.y, this.selectedMinY)
+
+  }
+  //#endregion
+
+  // Mouse move: update for camera & dragging
+  mouseMoveEvent(event: MouseEvent) {
     // Update cursor position
     this.cursor.x = (event.clientX / this.sizes.width) * 2 - 1 // -1 to 1 (left to right)
     this.cursor.y = -(event.clientY / this.sizes.height) * 2 + 1 // -1 to 1 (bottom to top)
 
     // Look around (on right click)
-    if (this.rightMouseDown) {
+    if (this.rightMouseDown) this.updateCameraRotation(event.movementX, event.movementY)
+
+    // Drag around (on left click)
+    if (this.selectedObject) this.dragAround()
+  }
+
+  // Updating camera rotation (looking around)
+  updateCameraRotation(deltaX = 0, deltaY = 0) {
       // UP - DOWN
-      this.camera.rotation.x += event.movementY * this.movementAmplitude
+      this.camera.rotation.x += deltaY * this.movementAmplitude
 
       // Don't look further than all the way up/down
       this.camera.rotation.x = Math.min(Math.max(this.camera.rotation.x, -Math.PI/2), Math.PI/2)
       
 
       // LEFT - RIGHT
-      this.camera.rotation.y += event.movementX * this.movementAmplitude
-    }
-
-    // if an object is selected
-    if (this.selectedObject) {
-      this.raycaster.setFromCamera(this.cursor, this.camera)
-
-      if (this.shiftKeyDown) {
-        this.raycaster.ray.intersectPlane(
-          this.verticalPlane,
-          this.planeIntersect
-        )
-      } else {
-        this.raycaster.ray.intersectPlane(
-          this.horizontalPlane,
-          this.planeIntersect
-        )
-      }
-
-      // Move to the intersection point w/ the plane
-      // Adjust with the shift (no sudden bumps when clicking elsewhere)
-      this.selectedObject.position.addVectors(this.planeIntersect, this.shift)
-    }
+      this.camera.rotation.y += deltaX * this.movementAmplitude
   }
-  //#endregion
 
-  //#region Zoom
+  // Zooming in-out
   scrollEvent(event: WheelEvent) {
     const zoomValue = this.camera.zoom - event.deltaY / 100 / 10
     this.camera.zoom = Math.min(Math.max(zoomValue, 1), 5)
     this.camera.updateProjectionMatrix()
   }
-  //#endregion
 }
