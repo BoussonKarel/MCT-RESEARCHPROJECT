@@ -1,7 +1,8 @@
-import * as THREE from 'three'
-import * as CANNON from 'cannon-es'
-import { Physics } from '../Physics';
-import { World } from '../World'
+import * as THREE from "three"
+import * as CANNON from "cannon-es"
+import { Physics } from "../Physics"
+import { World } from "../World"
+import { BaseObject } from "./Object"
 
 interface SimpleCubeOptions {
   position?: THREE.Vector3
@@ -9,50 +10,46 @@ interface SimpleCubeOptions {
   color?: THREE.Color
 }
 
-export class SimpleCube {
-  world: World;
-  
-  geometry: THREE.BoxGeometry;
-  material: THREE.MeshStandardMaterial;
-  mesh: THREE.Mesh<THREE.BoxGeometry, THREE.MeshStandardMaterial>;
-  
-  physics: Physics;
-  physicsBody: CANNON.Body;
+const defaultOptions: SimpleCubeOptions = {
+  size: 0.1, // default
+  color: new THREE.Color("red"), // default
+}
+
+export class SimpleCube extends BaseObject {
+  geometry: THREE.BoxGeometry
+  material: THREE.MeshStandardMaterial
 
   constructor(options?: SimpleCubeOptions) {
     options = {
-      size: 0.1, // default
-      color: new THREE.Color('red'), // default
-      ...options // user parameters
+      ...defaultOptions, // defaults
+      ...options, // user parameters
     }
 
+    super()
     // ThreeJS
-    this.world = new World()
-
-    this.geometry = new THREE.BoxGeometry(options.size, options.size, options.size);
+    this.geometry = new THREE.BoxGeometry(
+      options.size,
+      options.size,
+      options.size
+    )
 
     this.material = new THREE.MeshStandardMaterial({
-      color: options.color
+      color: options.color,
     })
-    
+
     this.mesh = new THREE.Mesh(this.geometry, this.material)
-    this.mesh.userData["parent"] = this
     
-    console.log(this.mesh)
 
     if (options.position) this.mesh.position.copy(options.position)
 
+    this.mesh.userData.parent = this
     this.world.scene.add(this.mesh)
     this.world.grabbables.push(this.mesh)
 
     // Physics
-    this.physics = new Physics()
-    
-    this.physicsBody = new CANNON.Body({
-      mass: 0.05, // kg
-      shape: new CANNON.Box(new CANNON.Vec3(options.size/2, options.size/2, options.size/2)),
-    })
-    
-    this.physics.addToPhysicsWorld(this.mesh, this.physicsBody)
+    this.createSimplePhysicsBox()
+
+    // Wrap things up in parent class
+    this.finishConstructor()
   }
 }

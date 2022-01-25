@@ -2,86 +2,98 @@ import * as THREE from "three"
 import * as CANNON from "cannon-es"
 import { Physics } from "../Physics"
 import { World } from "../World"
+import { BaseObject } from "./Object"
+
+let instance: UltrasoneSensor = null
 
 interface UltrasoneOptions {
   position?: THREE.Vector3
-  range?: number
+  range?: number,
+  rotation?: THREE.Euler
 }
 
-export class UltrasoneSensor {
-  world: World
+const defaultOptions: UltrasoneOptions = {
+  position: new THREE.Vector3(0, 0.77, 0),
+  range: 4,
+  rotation: new THREE.Euler(0,0,0)
+}
 
-  mesh: THREE.Mesh
-
+export class UltrasoneSensor extends BaseObject {
   raycaster: THREE.Raycaster
   arrowHelper: THREE.ArrowHelper
 
-  physics: Physics
-  physicsBody: CANNON.Body
-
   constructor(options?: UltrasoneOptions) {
+    super()
+
     options = {
-      position: new THREE.Vector3(0,.77,0),
-      range: 4,
-      ...options
+      ...defaultOptions,
+      ...options,
     }
-    this.world = new World()
+
+    // Only 1 ultrasone sensor can exist
+    if (instance) {
+      instance.setPR(options.position, new THREE.Euler(0,0,0))
+      return instance
+    } else instance = this
 
     // ThreeJS
     this.mesh = this.world.resources.items["Ultrasone"].scene.children[0].children[0]
-    this.mesh.geometry.center()
+    // this.mesh.geometry.center()
+
+    this.scale = 1 / 1000 // Designed at 1000x the size (45m to 45mm)
 
     // Rotation, scale, position
-    this.mesh.rotation.set(0,0,0)
-    this.mesh.scale.set(1 / 1000, 1 / 1000, 1 / 1000) // From 45m to 45mm wide
+    this.mesh.rotation.copy(options.rotation)
+    this.mesh.scale.set(this.scale, this.scale, this.scale)
     if (options.position) this.mesh.position.copy(options.position)
 
     this.mesh.userData.parent = this
     this.world.scene.add(this.mesh)
     this.world.grabbables.push(this.mesh)
 
-    const direction = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion)
+    const direction = new THREE.Vector3(0, 0, 1).applyQuaternion(
+      this.mesh.quaternion
+    )
 
-    this.raycaster = new THREE.Raycaster(this.mesh.position, direction, 0, options.range)
+    this.raycaster = new THREE.Raycaster(
+      this.mesh.position,
+      direction,
+      0,
+      options.range
+    )
 
-    this.arrowHelper = new THREE.ArrowHelper(direction, this.mesh.position, .5)
+    this.arrowHelper = new THREE.ArrowHelper(direction, this.mesh.position, 0.5)
     this.world.scene.add(this.arrowHelper)
 
     // Physics test
-    this.physics = new Physics()
-
-    this.mesh.geometry.computeBoundingBox()
-    const box3 = this.mesh.geometry.boundingBox
-
-    const dimensions = new THREE.Vector3().subVectors(box3.max, box3.min)
-    dimensions.multiplyScalar(0.001)
-
-    this.physicsBody = new CANNON.Body({
-      mass: 0.01, // kg
-      shape: new CANNON.Box(
-        new CANNON.Vec3(dimensions.x/2, dimensions.y/2, dimensions.z/2)
-        ),
-    })
-    
-    this.physics.addToPhysicsWorld(this.mesh, this.physicsBody)
+    this.createSimplePhysicsBox()
 
     // Events etc
-    this.world.time.on('tick', () => this.measureDistances())
+    this.world.time.on("tick", () => this.measureDistances())
+
+    // Wrap things up in parent class
+    this.finishConstructor()
   }
 
   measureDistances() {
     // Update raycaster and arrowhelper
-    const direction = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion)
+    const direction = new THREE.Vector3(0, 0, 1).applyQuaternion(
+      this.mesh.quaternion
+    )
     this.raycaster.set(this.mesh.position, direction)
     this.arrowHelper.position.copy(this.mesh.position)
-    this.arrowHelper.setDirection(new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion))
+    this.arrowHelper.setDirection(
+      new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion)
+    )
 
     // Cast ray
-    const otherObjects = this.world.scene.children.filter(c => c!= this.mesh && c != this.arrowHelper)
+    const otherObjects = this.world.scene.children.filter(
+      (c) => c != this.mesh && c != this.arrowHelper
+    )
     const intersects = this.raycaster.intersectObjects(otherObjects)
 
     if (intersects.length > 0) {
-      const distance = Math.max(Math.round(intersects[0].distance*100), 2)
+      const distance = Math.max(Math.round(intersects[0].distance * 100), 2)
       console.log("De ultrasone meet: ", distance, "centimeter")
     }
   }
