@@ -35,7 +35,7 @@ export class LDR extends BaseObject {
     this.createSimplePhysicsBox()
 
     // Events etc
-    this.world.time.on("tick", () => this.measureLightIntensity())
+    // this.world.time.on("tick", () => this.measureLightIntensity())
 
     // Wrap things up in parent class
     this.finishConstructor()
@@ -44,7 +44,6 @@ export class LDR extends BaseObject {
   setup3D(options: LDROptions) {
     // Mesh, no geometry or material, we are using a resource
     this.mesh = this.world.resources.items["LDR"].scene.children[0].children[0]
-    console.log(this.mesh)
 
     // Scale
     this.scale = 1 / 1000 // Designed at 1000x the size (45m to 45mm)
@@ -59,6 +58,6 @@ export class LDR extends BaseObject {
   }
 
   measureLightIntensity() {
-
+    console.log("There is no way to measure light in Three.JS")
   }
 }
