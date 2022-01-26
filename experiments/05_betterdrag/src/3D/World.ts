@@ -2,7 +2,7 @@ import * as THREE from "three"
 import sources from "../sources"
 
 import { Resources } from "./Resources"
-import { ClickAndDrag } from "./Controls/ClickAndDrag"
+import { Controls } from "./Controls/Controls"
 import { Sizes } from "./Sizes"
 import { Time } from "./Time"
 
@@ -81,7 +81,7 @@ export class World {
     this.camera.lookAt(new THREE.Vector3(0, .73, 0))
 
     // Controls
-    this.controls = new ClickAndDrag(this.camera)
+    this.controls = new Controls(this.camera)
 
     // Resources
     this.resources = new Resources(sources)
