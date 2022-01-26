@@ -25,6 +25,7 @@ export class ElectronicsObject extends BaseObject {
 
     this.mesh.add(pinMesh) // Adds it to mesh and places it at local (0,0,0)
     pinMesh.position.copy(position)
+    pinMesh.visible = false
 
     const newPin = new Pin(this, pinMesh)
 

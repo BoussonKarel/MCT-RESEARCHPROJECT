@@ -14,5 +14,10 @@ export default [
     name: "Ultrasone",
     type: "gltfModel",
     path: "/models/Ultrasone/Ultrasone.glb"
+  },
+  {
+    name: "Arduino",
+    type: "gltfModel",
+    path: "/models/Arduino/Arduino.glb"
   }
 ]

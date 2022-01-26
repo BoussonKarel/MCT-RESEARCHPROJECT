@@ -1,7 +1,5 @@
 import * as THREE from "three"
-import { BaseObject } from "./BaseObject"
 import { ElectronicsObject } from "./Electronics/ElectronicsObject"
-import { Pin } from "./Electronics/Pin"
 
 let instance: UltrasoneSensor = null
 
@@ -55,7 +53,6 @@ export class UltrasoneSensor extends ElectronicsObject {
 
     // Events etc
     this.world.time.on("tick", () => {
-      // this.alignNodes()
       this.measureDistances()
     })
 
