@@ -2,7 +2,7 @@ import * as THREE from "three"
 import sources from "../sources"
 
 import { Resources } from "./Resources"
-import { ClickAndDrag } from "./Controls/ClickAndDrag"
+import { ClickAndDrag2 } from "./Controls/ClickAndDrag2"
 import { Sizes } from "./Sizes"
 import { Time } from "./Time"
 
@@ -21,7 +21,7 @@ export class World {
   renderer: THREE.WebGLRenderer
   time: Time
   scene: THREE.Scene
-  controls: ClickAndDrag
+  controls: ClickAndDrag2
   resources: Resources
   grabbables: THREE.Object3D[]
 
@@ -79,7 +79,7 @@ export class World {
     this.camera.lookAt(new THREE.Vector3(0, .73, 0))
 
     // Controls
-    this.controls = new ClickAndDrag(this.camera, this.canvas)
+    this.controls = new ClickAndDrag2(this.camera)
     this.grabbables = []
 
     // Resources

@@ -6,7 +6,6 @@ import { World } from "../World"
 export class ClickAndDrag {
   world: World
   camera: THREE.PerspectiveCamera
-  domElement: Element
   sizes: Sizes
   time: Time
   cursor: THREE.Vector2
@@ -35,12 +34,11 @@ export class ClickAndDrag {
   // Check if it's connectable with something
   connectableWith: THREE.Object3D<THREE.Event>
 
-  constructor(camera: THREE.PerspectiveCamera, domElement: Element) {
+  constructor(camera: THREE.PerspectiveCamera) {
     this.world = new World()
 
     this.camera = camera
     this.camera.rotation.reorder("YXZ")
-    this.domElement = domElement
 
     this.sizes = new Sizes()
     this.time = new Time()
@@ -48,7 +46,7 @@ export class ClickAndDrag {
     this.cursor = new THREE.Vector2()
 
     // Disable context menu (on right click)
-    this.domElement.addEventListener(
+    this.world.renderer.domElement.addEventListener(
       "contextmenu",
       (e) => e.preventDefault()
     )
