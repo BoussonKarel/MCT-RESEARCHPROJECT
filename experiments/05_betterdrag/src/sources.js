@@ -14,10 +14,5 @@ export default [
     name: "Ultrasone",
     type: "gltfModel",
     path: "/models/Ultrasone/Ultrasone.glb"
-  },
-  {
-    name: "LDR",
-    type: "gltfModel",
-    path: "/models/LDR/LDR.glb"
   }
 ]
