@@ -16,12 +16,10 @@ export class Controls {
   movementAmplitude = 0.002
   raycaster: THREE.Raycaster = new THREE.Raycaster()
 
-  selectedObject: THREE.Object3D
-  selectedMinY: number
-  objectRaycaster: THREE.Raycaster = new THREE.Raycaster()
-
+  // Moving stuff
+  movingObject: THREE.Object3D
+  movingMinY: number
   movementPlane = new THREE.Plane()
-  planeIntersect = new THREE.Vector3() // Point of intersection ray w/ plane
   diffY = 0.05
   shift = new THREE.Vector3() // Distance between intersect[x].object.position - intersect[x].point
 
@@ -55,12 +53,12 @@ export class Controls {
   }
 
   onMouseDown(e: MouseEvent) {
-    if (e.button === 0 && !this.selectedObject) this.pickObject()
+    if (e.button === 0 && !this.movingObject) this.pickObject()
     if (e.button === 2 && !this.rightMouseDown) this.rightMouseDown = true
   }
 
   onMouseUp(e: MouseEvent) {
-    if (e.button === 0 && this.selectedObject) this.releaseObject()
+    if (e.button === 0 && this.movingObject) this.releaseObject()
     if (e.button === 2 && this.rightMouseDown) this.rightMouseDown = false
   }
 
@@ -75,7 +73,7 @@ export class Controls {
     // Look around (on right click)
     this.updateCameraRotation(event.movementX, event.movementY)
 
-    if (this.selectedObject) this.moveObject()
+    if (this.movingObject) this.moveObject()
     else this.hoverNodes()
   }
 
@@ -95,7 +93,7 @@ export class Controls {
   onKeyDown(event: KeyboardEvent) {
     if (event.key === "Shift" && !this.shiftKeyDown) {
       this.shiftKeyDown = true
-      if (this.selectedObject) this.updatePlane()
+      if (this.movingObject) this.updatePlane()
     }
 
     if (event.code === "KeyR") this.rotateObject()
@@ -104,7 +102,7 @@ export class Controls {
   onKeyUp(event: KeyboardEvent) {
     if (event.key === "Shift") {
       this.shiftKeyDown = false
-      if (this.selectedObject) this.updatePlane()
+      if (this.movingObject) this.updatePlane()
     }
   }
   //#endregion
@@ -117,10 +115,10 @@ export class Controls {
 
     // Set minimum Y height
     intersects[0].object.position.y += this.diffY
-    this.selectedMinY = intersects[0].object.position.y
+    this.movingMinY = intersects[0].object.position.y
 
     // Set selected object
-    this.selectedObject = intersects[0].object
+    this.movingObject = intersects[0].object
     this.shift.subVectors(intersects[0].object.position, intersects[0].point)
 
     // Add a horizontal plane slicing trough point of intersection
@@ -128,7 +126,7 @@ export class Controls {
   }
 
   updatePlane() {
-    const pIntersect = new THREE.Vector3().subVectors(this.selectedObject.position, this.shift)
+    const pIntersect = new THREE.Vector3().subVectors(this.movingObject.position, this.shift)
 
     this.movementPlane.setFromNormalAndCoplanarPoint(
       this.shiftKeyDown ? pvNormal : phNormal,
@@ -137,22 +135,23 @@ export class Controls {
   }
 
   releaseObject() {
-    this.selectedObject = null
+    this.movingObject = null
   }
 
   rotateObject() {
-    this.selectedObject.rotation.x += -Math.PI / 4
+    this.movingObject.rotation.x += -Math.PI / 4
   }
 
   moveObject() {
-    if (!this.selectedObject) return
+    if (!this.movingObject) return
 
-    this.raycaster.ray.intersectPlane(this.movementPlane, this.planeIntersect)
+    const intersectPoint = new THREE.Vector3()
+    this.raycaster.ray.intersectPlane(this.movementPlane, intersectPoint)
 
     // Move to intersection point w/ the plane
     // Adjust with the shift
-    this.selectedObject.position.addVectors(this.planeIntersect, this.shift)
-    this.selectedObject.position.y = Math.max(this.selectedObject.position.y, this.selectedMinY)
+    this.movingObject.position.addVectors(intersectPoint, this.shift)
+    this.movingObject.position.y = Math.max(this.movingObject.position.y, this.movingMinY)
   }
   //#endregion
 
