@@ -16,6 +16,7 @@ export class Controls {
   movementAmplitude = 0.002
   raycaster: THREE.Raycaster = new THREE.Raycaster()
 
+  // Moving stuff
   movingObject: THREE.Object3D
   movingMinY: number
   movementPlane = new THREE.Plane()
