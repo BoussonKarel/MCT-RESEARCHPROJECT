@@ -1,13 +1,11 @@
 import * as THREE from "three"
 import { Sizes } from "../Sizes"
-import { Time } from "../Time"
 import { World } from "../World"
 
 export class ClickAndDrag {
   world: World
   camera: THREE.PerspectiveCamera
   sizes: Sizes
-  time: Time
   cursor: THREE.Vector2
   leftMouseDown: boolean = false
   rightMouseDown: boolean = false
@@ -41,7 +39,6 @@ export class ClickAndDrag {
     this.camera.rotation.reorder("YXZ")
 
     this.sizes = new Sizes()
-    this.time = new Time()
 
     this.cursor = new THREE.Vector2()
 
@@ -55,8 +52,6 @@ export class ClickAndDrag {
     this.keyEvents()
     document.addEventListener("mousemove", (e) => this.mouseMoveEvent(e))
     document.addEventListener("wheel", (e) => this.scrollEvent(e))
-
-    this.time.on("tick", () => {})
   }
 
   
