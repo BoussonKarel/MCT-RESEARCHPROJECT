@@ -23,7 +23,9 @@ export class World {
   scene: THREE.Scene
   controls: ClickAndDrag
   resources: Resources
-  grabbables: THREE.Object3D[]
+
+  grabbables: THREE.Object3D[] = []
+  pins: THREE.Object3D[] = [] 
 
   constructor() {
     if (world) return world
@@ -80,7 +82,6 @@ export class World {
 
     // Controls
     this.controls = new ClickAndDrag(this.camera)
-    this.grabbables = []
 
     // Resources
     this.resources = new Resources(sources)

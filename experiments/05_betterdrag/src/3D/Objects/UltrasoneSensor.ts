@@ -3,7 +3,7 @@ import { BaseObject } from "./BaseObject"
 
 let instance: UltrasoneSensor = null
 
-const arrowHelperVisible = true
+const arrowHelperVisible = false
 
 interface Range {
   min: number
@@ -12,21 +12,24 @@ interface Range {
 
 interface UltrasoneOptions {
   position?: THREE.Vector3
-  range?: Range,
+  range?: Range
   rotation?: THREE.Euler
 }
 
 const defaultOptions: UltrasoneOptions = {
-  position: new THREE.Vector3(0, 0.77, 0),
-  range: {min: 0, max: 4},
-  rotation: new THREE.Euler(0,0,0)
+  position: new THREE.Vector3(0, .75, 0),
+  range: { min: 0, max: 4 },
+  rotation: new THREE.Euler(-Math.PI/2, 0, 0),
 }
 
-const defaultDirection = new THREE.Vector3(0,0,1) // Along z-axis
+const defaultDirection = new THREE.Vector3(0, 0, 1) // Along z-axis
 
 export class UltrasoneSensor extends BaseObject {
   raycaster: THREE.Raycaster
   arrowHelper: THREE.ArrowHelper
+  group = new THREE.Group()
+
+  pins: THREE.Mesh[] = []
 
   constructor(options?: UltrasoneOptions) {
     super()
@@ -38,18 +41,24 @@ export class UltrasoneSensor extends BaseObject {
 
     // Only 1 ultrasone sensor can exist
     if (instance) {
-      instance.setPR(options.position, new THREE.Euler(0,0,0))
+      instance.setPR(options.position, options.rotation)
       return instance
     } else instance = this
 
     // ThreeJS
     this.setup3D(options)
 
+    // Add pins
+    this.addPins()
+
     // Physics
     this.createSimplePhysicsBox()
 
     // Events etc
-    this.world.time.on("tick", () => this.measureDistances())
+    this.world.time.on("tick", () => {
+      // this.alignNodes()
+      this.measureDistances()
+    })
 
     // Wrap things up in parent class
     this.finishConstructor()
@@ -57,7 +66,8 @@ export class UltrasoneSensor extends BaseObject {
 
   setup3D(options: UltrasoneOptions) {
     // Mesh, no geometry or material, we are using a resource
-    this.mesh = this.world.resources.items["Ultrasone"].scene.children[0].children[0]
+    this.mesh =
+      this.world.resources.items["Ultrasone"].scene.children[0].children[0]
 
     // Scale
     this.scale = 1 / 1000 // Designed at 1000x the size (45m to 45mm)
@@ -73,10 +83,39 @@ export class UltrasoneSensor extends BaseObject {
     this.setRaycaster()
   }
 
+  addPins() {
+    const shift = new THREE.Vector3(-6, -15, 1) // mm
+
+    for (const _ of Array(5)) {
+      this.createPin(shift)
+      shift.x += 3 // +3mm is the next node
+    }
+    console.log(this.mesh)
+  }
+
+  createPin(shift: THREE.Vector3) {
+    const pinGeometry = new THREE.SphereGeometry(1.25)
+    const pinMaterial = new THREE.MeshStandardMaterial({
+      color: 0xff0000,
+    })
+
+    const pin = new THREE.Mesh(pinGeometry, pinMaterial)
+
+    this.mesh.add(pin) // Adds it to mesh and places it at local (0,0,0)
+    pin.position.add(shift) // Shift it in local coordinates
+
+    this.pins.push(pin)
+    this.world.pins.push(pin)
+    
+    pin.visible = false
+  }
+
   setRaycaster(range: Range = defaultOptions.range) {
     // defaultDirection = world z-axis
     // Rotate this so it matches the object z-axis (apply the same quaternion)
-    const direction = new THREE.Vector3().copy(defaultDirection).applyQuaternion(this.mesh.quaternion)
+    const direction = new THREE.Vector3()
+      .copy(defaultDirection)
+      .applyQuaternion(this.mesh.quaternion)
 
     // if the raycaster doesn't exist: create
     if (!this.raycaster) {

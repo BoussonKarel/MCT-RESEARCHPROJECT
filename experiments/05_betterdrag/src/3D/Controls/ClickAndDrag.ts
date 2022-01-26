@@ -60,7 +60,7 @@ export class ClickAndDrag {
     window.addEventListener("mousedown", (e) => {
       if (e.button === 0 && !this.leftMouseDown) {
         this.leftMouseDown = true
-        this.dragStart()
+        this.pickObject()
       }
 
       if (e.button === 2 && !this.rightMouseDown) {
@@ -71,7 +71,7 @@ export class ClickAndDrag {
     window.addEventListener("mouseup", (e) => {
       if (e.button === 0 && this.leftMouseDown) {
         this.leftMouseDown = false
-        this.dragRelease()
+        this.releaseObject()
       }
       if (e.button === 2 && this.rightMouseDown) {
         this.rightMouseDown = false
@@ -83,20 +83,24 @@ export class ClickAndDrag {
     document.addEventListener("keydown", (e) => {
       if (e.key === "Shift" && !this.shiftKeyDown) {
         this.shiftKeyDown = true
-        if (this.leftMouseDown) this.dragStart(true)
+        if (this.leftMouseDown) this.pickObject(true)
+      }
+
+      if (e.code === "KeyR") {
+        this.rotateObject()
       }
     })
     document.addEventListener("keyup", (e) => {
       if (e.key === "Shift") {
         this.shiftKeyDown = false
-        if (this.leftMouseDown) this.dragStart(true)
+        if (this.leftMouseDown) this.pickObject(true)
       }
     })
   }
   //#endregion
 
   //#region Drag
-  dragStart(update = false) {
+  pickObject(update = false) {
     // Shoot ray and check for intersecting objects
     this.raycaster.setFromCamera(
       { x: this.cursor.x, y: this.cursor.y },
@@ -126,11 +130,17 @@ export class ClickAndDrag {
     }
   }
 
-  dragRelease() {
+  releaseObject() {
     this.selectedObject = null
   }
 
-  dragAround() {
+  rotateObject() {
+    this.selectedObject.rotation.x += - Math.PI/4
+  }
+
+  moveObject() {
+    if (!this.selectedObject) return
+
     this.raycaster.setFromCamera(this.cursor, this.camera)
 
     if (this.shiftKeyDown) {
@@ -153,6 +163,16 @@ export class ClickAndDrag {
   }
   //#endregion
 
+  hoverNodes() {
+    this.raycaster.setFromCamera(this.cursor, this.camera)
+
+    const intersects = this.raycaster.intersectObjects(this.world.pins)
+
+    for (const pin of this.world.pins) {
+      pin.visible = intersects.some(i => i.object == pin)
+    }
+  }
+
   // Mouse move: update for camera & dragging
   mouseMoveEvent(event: MouseEvent) {
     // Update cursor position
@@ -162,8 +182,10 @@ export class ClickAndDrag {
     // Look around (on right click)
     if (this.rightMouseDown) this.updateCameraRotation(event.movementX, event.movementY)
 
-    // Drag around (on left click)
-    if (this.selectedObject) this.dragAround()
+    // Move object around (on left click)
+    this.moveObject()
+
+    this.hoverNodes()
   }
 
   // Updating camera rotation (looking around)
@@ -181,8 +203,9 @@ export class ClickAndDrag {
 
   // Zooming in-out
   scrollEvent(event: WheelEvent) {
-    const zoomValue = this.camera.zoom - event.deltaY / 100 / 10
-    this.camera.zoom = Math.min(Math.max(zoomValue, 1), 5)
+    this.camera.zoom -= (event.deltaY / 100) * 0.2
+
+    this.camera.zoom = Math.min(Math.max(this.camera.zoom, 1), 5)
     this.camera.updateProjectionMatrix()
   }
 }

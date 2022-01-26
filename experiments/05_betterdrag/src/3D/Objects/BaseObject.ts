@@ -20,12 +20,17 @@ export class BaseObject {
     this.physics = new Physics()
   }
 
+  static getComponentFromMesh(mesh: THREE.Object3D) {
+    return mesh.userData.component ? mesh.userData.component : undefined
+  }
+
   finishConstructor() {
     // needs to be done after the child class constructor()
-    this.mesh.userData.parent = this
+    this.mesh.userData.component = this
 
     // Add mesh to scene
     this.world.scene.add(this.mesh)
+    console.log("Add mesh to world")
     // Add physics body to physics world
     if (this.physicsBody) this.physics.addToPhysicsWorld(this.mesh, this.physicsBody)
   }
