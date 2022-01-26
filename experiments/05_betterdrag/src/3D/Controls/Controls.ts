@@ -75,10 +75,8 @@ export class Controls {
     // Look around (on right click)
     this.updateCameraRotation(event.movementX, event.movementY)
 
-    // Move object around (on left click)
-    this.moveObject()
-
-    this.hoverNodes()
+    if (this.selectedObject) this.moveObject()
+    else this.hoverNodes()
   }
 
   onWheel(event: WheelEvent) {
@@ -158,6 +156,7 @@ export class Controls {
   }
   //#endregion
 
+  //#region Connecting nodes
   hoverNodes() {
     const intersects = this.raycaster.intersectObjects(this.world.pins)
 
@@ -165,8 +164,9 @@ export class Controls {
       pin.visible = intersects.some((i) => i.object == pin)
     }
   }
+  //#endregion
 
-  // Updating camera rotation (looking around)
+  //#region Camera
   updateCameraRotation(deltaX = 0, deltaY = 0) {
     if (!this.rightMouseDown) return
     // UP - DOWN
@@ -180,4 +180,5 @@ export class Controls {
     // LEFT - RIGHT
     this.camera.rotation.y += deltaX * this.movementAmplitude
   }
+  //#endregion
 }
