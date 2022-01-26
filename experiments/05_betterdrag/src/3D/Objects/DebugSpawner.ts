@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { Debug } from '../Debug';
 import { World } from "../World";
-import { LDR } from './LDR';
 import { SimpleCube } from "./SimpleCube";
 import { UltrasoneSensor } from './UltrasoneSensor';
 
@@ -16,7 +15,6 @@ export class DebugSpawner {
     if (this.debug.active) {
       this.debug.ui.add(this, 'addCube')
       this.debug.ui.add(this, 'addUltrasone')
-      this.debug.ui.add(this, 'addLDR')
     }
   }
 
@@ -27,9 +25,5 @@ export class DebugSpawner {
 
   addUltrasone() {
     const ultrasone = new UltrasoneSensor()
-  }
-
-  addLDR() {
-    const ldr = new LDR()
   }
 }
