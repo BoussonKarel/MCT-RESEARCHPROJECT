@@ -164,24 +164,22 @@ export class Controls {
   hoverNodes() {
     const intersects = this.raycaster.intersectObjects(this.world.pins)
 
-    this.hoveringNode = null
-    for (const pin of this.world.pins) pin.visible = false
-    for (const pin of intersects) {
-      this.hoveringNode = pin.object
-      this.hoveringNode.visible = true
-    }
+    this.world.pins.filter(p => !this.selectedNodes.includes(p)).forEach(p => p.visible = false)
+
+    this.hoveringNode = intersects.length > 0 ? intersects[0].object : null
+    if (this.hoveringNode) this.hoveringNode.visible = true
   }
 
   pickNode() {
     if (!this.hoveringNode) return
 
-    // toggle node: if in, remove
-    // else: add
-
     const contains = this.selectedNodes.findIndex(n => n === this.hoveringNode)
 
     if (contains > -1) this.selectedNodes.splice(contains, 1)
-    else this.selectedNodes.push(this.hoveringNode)
+    else {
+      this.selectedNodes.push(this.hoveringNode)
+      this.hoveringNode.visible = true
+    }
 
     if (this.selectedNodes.length > 1) {
       this.connectNodes(this.selectedNodes)
