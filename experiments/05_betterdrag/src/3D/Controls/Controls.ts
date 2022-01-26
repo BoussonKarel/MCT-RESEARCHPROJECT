@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import { addConnection } from "../Objects/Electronics/Connection"
 import { Sizes } from "../Sizes"
 import { World } from "../World"
 
@@ -23,9 +24,9 @@ export class Controls {
   diffY = 0.05
   shift = new THREE.Vector3() // Distance between intersect[x].object.position - intersect[x].point
 
-  // Node stuff
-  hoveringNode: THREE.Object3D
-  selectedNodes: THREE.Object3D[] = []
+  // Pin stuff
+  hoveringPinMesh: THREE.Object3D
+  selectedPinMeshes: THREE.Object3D[] = []
 
   // Check if it's connectable with something
   connectableWith: THREE.Object3D<THREE.Event>
@@ -58,7 +59,7 @@ export class Controls {
 
   onMouseDown(e: MouseEvent) {
     if (e.button === 0 && !this.movingObject) this.pickObject()
-    if (e.button === 0 && this.hoveringNode) this.pickNode()
+    if (e.button === 0 && this.hoveringPinMesh) this.pickPin()
     if (e.button === 2 && !this.rightMouseDown) this.rightMouseDown = true
   }
 
@@ -79,7 +80,7 @@ export class Controls {
     this.updateCameraRotation(event.movementX, event.movementY)
 
     if (this.movingObject) this.moveObject()
-    else this.hoverNodes()
+    else this.hoverPins()
   }
 
   onWheel(event: WheelEvent) {
@@ -160,35 +161,38 @@ export class Controls {
   }
   //#endregion
 
-  //#region Connecting nodes
-  hoverNodes() {
-    const intersects = this.raycaster.intersectObjects(this.world.pins)
+  //#region Connecting pins
+  hoverPins() {
+    const intersects = this.raycaster.intersectObjects(this.world.pinMeshes)
 
-    this.world.pins.filter(p => !this.selectedNodes.includes(p)).forEach(p => p.visible = false)
+    this.world.pinMeshes.filter(p => !this.selectedPinMeshes.includes(p)).forEach(p => p.visible = false)
 
-    this.hoveringNode = intersects.length > 0 ? intersects[0].object : null
-    if (this.hoveringNode) this.hoveringNode.visible = true
+    this.hoveringPinMesh = intersects.length > 0 ? intersects[0].object : null
+    if (this.hoveringPinMesh) this.hoveringPinMesh.visible = true
   }
 
-  pickNode() {
-    if (!this.hoveringNode) return
+  pickPin() {
+    if (!this.hoveringPinMesh) return
 
-    const contains = this.selectedNodes.findIndex(n => n === this.hoveringNode)
+    const contains = this.selectedPinMeshes.findIndex(n => n === this.hoveringPinMesh)
 
-    if (contains > -1) this.selectedNodes.splice(contains, 1)
+    if (contains > -1) this.selectedPinMeshes.splice(contains, 1)
     else {
-      this.selectedNodes.push(this.hoveringNode)
-      this.hoveringNode.visible = true
+      this.selectedPinMeshes.push(this.hoveringPinMesh)
+      this.hoveringPinMesh.visible = true
     }
 
-    if (this.selectedNodes.length > 1) {
-      this.connectNodes(this.selectedNodes)
-      this.selectedNodes = []
+    if (this.selectedPinMeshes.length > 1) {
+      this.connectPins(this.selectedPinMeshes)
+      this.selectedPinMeshes = []
     }
   }
 
-  connectNodes(nodes: THREE.Object3D[]) {
-    console.log("Connecting node", nodes[0].uuid, "and", nodes[1].uuid)
+  connectPins(pinMeshes: THREE.Object3D[]) {
+    const pin1 = pinMeshes[0].userData.pin
+    const pin2 = pinMeshes[1].userData.pin
+
+    addConnection(pin1, pin2)
   }
   //#endregion
 

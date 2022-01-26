@@ -1,5 +1,7 @@
 import * as THREE from "three"
 import { BaseObject } from "./BaseObject"
+import { ElectronicsObject } from "./Electronics/ElectronicsObject"
+import { Pin } from "./Electronics/Pin"
 
 let instance: UltrasoneSensor = null
 
@@ -24,12 +26,9 @@ const defaultOptions: UltrasoneOptions = {
 
 const defaultDirection = new THREE.Vector3(0, 0, 1) // Along z-axis
 
-export class UltrasoneSensor extends BaseObject {
+export class UltrasoneSensor extends ElectronicsObject {
   raycaster: THREE.Raycaster
   arrowHelper: THREE.ArrowHelper
-  group = new THREE.Group()
-
-  pins: THREE.Mesh[] = []
 
   constructor(options?: UltrasoneOptions) {
     super()
@@ -84,30 +83,17 @@ export class UltrasoneSensor extends BaseObject {
   }
 
   addPins() {
-    const shift = new THREE.Vector3(-6, -15, 1) // mm
+    const names = ["1", "2", "3", "4"]
 
-    for (const _ of Array(5)) {
-      this.createPin(shift)
-      shift.x += 3 // +3mm is the next node
+    // first pin location
+    const shift = new THREE.Vector3(-4.5, -16, 1)
+    for (const name of names) {
+      const pos = new THREE.Vector3().copy(this.mesh.position).add(shift)
+
+      this.createPin(name, pos)
+
+      shift.x += 3 // move to next pin (3mm apart)
     }
-    console.log(this.mesh)
-  }
-
-  createPin(shift: THREE.Vector3) {
-    const pinGeometry = new THREE.SphereGeometry(1.25)
-    const pinMaterial = new THREE.MeshStandardMaterial({
-      color: 0xff0000,
-    })
-
-    const pin = new THREE.Mesh(pinGeometry, pinMaterial)
-
-    this.mesh.add(pin) // Adds it to mesh and places it at local (0,0,0)
-    pin.position.add(shift) // Shift it in local coordinates
-
-    this.pins.push(pin)
-    this.world.pins.push(pin)
-    
-    pin.visible = false
   }
 
   setRaycaster(range: Range = defaultOptions.range) {

@@ -5,11 +5,11 @@ import { Resources } from "./Resources"
 import { Controls } from "./Controls/Controls"
 import { Sizes } from "./Sizes"
 import { Time } from "./Time"
+import { Debug } from "./Debug"
 
-import { SimpleCube } from './Objects/SimpleCube'
 import { Floor } from "./Objects/Floor"
 import { Desk } from "./Objects/Desk"
-import { Debug } from "./Debug"
+import { Pin } from "./Objects/Electronics/Pin"
 
 let world: World = null
 
@@ -21,11 +21,11 @@ export class World {
   renderer: THREE.WebGLRenderer
   time: Time
   scene: THREE.Scene
-  controls: ClickAndDrag
+  controls: Controls
   resources: Resources
 
   grabbables: THREE.Object3D[] = []
-  pins: THREE.Object3D[] = [] 
+  pinMeshes: THREE.Object3D[] = [] 
 
   constructor() {
     if (world) return world
@@ -69,7 +69,7 @@ export class World {
 
     // Camera
     this.camera = new THREE.PerspectiveCamera(
-      60,
+      45,
       this.sizes.width / this.sizes.height,
       0.1,
       100
