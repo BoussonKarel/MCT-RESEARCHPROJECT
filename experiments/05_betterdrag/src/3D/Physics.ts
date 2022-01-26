@@ -54,7 +54,7 @@ export class Physics {
     for (const object of this.objects) {
       // Being dragged
       // --> 3D world to Physics world
-      if (object.mesh === this.world.controls.selectedObject) {
+      if (object.mesh === this.world.controls.movingObject) {
         // @ts-ignore
         object.body.position.copy(object.mesh.position)
         // @ts-ignore
