@@ -23,6 +23,10 @@ export class Controls {
   diffY = 0.05
   shift = new THREE.Vector3() // Distance between intersect[x].object.position - intersect[x].point
 
+  // Node stuff
+  hoveringNode: THREE.Object3D
+  selectedNodes: THREE.Object3D[]
+
   // Check if it's connectable with something
   connectableWith: THREE.Object3D<THREE.Event>
 
@@ -54,6 +58,7 @@ export class Controls {
 
   onMouseDown(e: MouseEvent) {
     if (e.button === 0 && !this.movingObject) this.pickObject()
+    if (e.button === 0 && this.hoveringNode) this.pickNode()
     if (e.button === 2 && !this.rightMouseDown) this.rightMouseDown = true
   }
 
@@ -159,9 +164,18 @@ export class Controls {
   hoverNodes() {
     const intersects = this.raycaster.intersectObjects(this.world.pins)
 
-    for (const pin of this.world.pins) {
-      pin.visible = intersects.some((i) => i.object == pin)
+    this.hoveringNode = null
+    for (const pin of this.world.pins) pin.visible = false
+    for (const pin of intersects) {
+      this.hoveringNode = pin.object
+      this.hoveringNode.visible = true
     }
+  }
+
+  pickNode() {
+    if (!this.hoveringNode) return
+
+    console.log("Selecting node")
   }
   //#endregion
 
