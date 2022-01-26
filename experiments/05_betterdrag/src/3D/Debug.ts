@@ -7,7 +7,8 @@ export class Debug {
   ui: GUI
 
   constructor() {
-    this.active = window.location.hash === '#debug'
+    // this.active = window.location.hash === '#debug'
+    this.active = true
 
     if (this.active) {
       if (instance) return instance
