@@ -25,7 +25,7 @@ export class Controls {
 
   // Node stuff
   hoveringNode: THREE.Object3D
-  selectedNodes: THREE.Object3D[]
+  selectedNodes: THREE.Object3D[] = []
 
   // Check if it's connectable with something
   connectableWith: THREE.Object3D<THREE.Event>
@@ -175,7 +175,22 @@ export class Controls {
   pickNode() {
     if (!this.hoveringNode) return
 
-    console.log("Selecting node")
+    // toggle node: if in, remove
+    // else: add
+
+    const contains = this.selectedNodes.findIndex(n => n === this.hoveringNode)
+
+    if (contains > -1) this.selectedNodes.splice(contains, 1)
+    else this.selectedNodes.push(this.hoveringNode)
+
+    if (this.selectedNodes.length > 1) {
+      this.connectNodes(this.selectedNodes)
+      this.selectedNodes = []
+    }
+  }
+
+  connectNodes(nodes: THREE.Object3D[]) {
+    console.log("Connecting node", nodes[0].uuid, "and", nodes[1].uuid)
   }
   //#endregion
 
