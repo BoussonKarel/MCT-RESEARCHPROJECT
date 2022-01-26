@@ -117,7 +117,7 @@ export class Controls {
     intersects[0].object.position.y += this.diffY
     this.movingMinY = intersects[0].object.position.y
 
-    // Set selected object
+    // Set moving object
     this.movingObject = intersects[0].object
     this.shift.subVectors(intersects[0].object.position, intersects[0].point)
 
