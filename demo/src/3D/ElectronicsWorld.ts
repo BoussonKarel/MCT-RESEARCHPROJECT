@@ -3,14 +3,11 @@ import { Connection } from "./Objects/Electronics/Connection";
 import { Pin } from "./Objects/Electronics/Pin";
 import { World } from "./World";
 
-const lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff } );
-
 let instance = null
 
 export class ElectronicsWorld {
   world: World
   connections: Connection[] = []
-  lines: THREE.Line[] = []
 
   constructor() {
     if (instance) return instance
@@ -55,6 +52,14 @@ export class ElectronicsWorld {
     })
   }
 
+  removeConnection(pin1: Pin, pin2: Pin) {
+    this.connections = this.connections.filter(p => (p.a != pin1 && p.b != pin2) && (p.a != pin2 && p.b != pin1))
+  }
+
+  removeConnectionsOnPin(pin: Pin) {
+    this.connections = this.connections.filter(p => p.a != pin && p.b != pin)
+  }
+
   checkConnection(goal: Pin, v: Pin, discovered = [], path = []) {
     // discovered: list of ALL nodes we visited
     // path: list of nodes we visited, leading to our goal
@@ -86,26 +91,24 @@ export class ElectronicsWorld {
   }
 
   drawConnections() {
-    // Remove all lines
-    for (const line of this.lines) {
-      this.world.scene.remove(line)
-    }
-    this.lines = []
-
-    const drawnPins: Pin[] = []
-
     for (const conn of this.connections) {
-      if (drawnPins.includes(conn.a) || drawnPins.includes(conn.b)) return
-      drawnPins.push(conn.a, conn.b)
+      if (!conn.line) {
+        const randomHex = Math.floor(Math.random() * 0xffffff)
+        console.log(randomHex)
+        const geometry = new THREE.BufferGeometry()
+        const material = new THREE.LineBasicMaterial( { color: randomHex } );
 
-      // Draw line
-      const posA = conn.a.mesh.parent.localToWorld(new THREE.Vector3().copy(conn.a.mesh.position))
-      const posB = conn.b.mesh.parent.localToWorld(new THREE.Vector3().copy(conn.b.mesh.position))
-      const geometry = new THREE.BufferGeometry().setFromPoints([posA, posB])
-
-      const line = new THREE.Line(geometry, lineMaterial)
-      this.lines.push(line)
-      this.world.scene.add(line)
+        conn.line = new THREE.Line(geometry, material)
+        
+        this.world.scene.add(conn.line)
+      }
+      this.updateLinePoints(conn)
     }
+  }
+
+  updateLinePoints(conn: Connection) {
+    const posA = conn.a.mesh.parent.localToWorld(new THREE.Vector3().copy(conn.a.mesh.position))
+    const posB = conn.b.mesh.parent.localToWorld(new THREE.Vector3().copy(conn.b.mesh.position))
+    conn.line.geometry.setFromPoints([posA, posB])
   }
 }

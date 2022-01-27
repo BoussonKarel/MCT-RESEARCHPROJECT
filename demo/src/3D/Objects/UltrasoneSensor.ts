@@ -124,7 +124,9 @@ export class UltrasoneSensor extends ElectronicsObject {
 
     // Cast ray
     const otherObjects = this.world.scene.children.filter(
-      (c) => c != this.mesh && c != this.arrowHelper
+      (obj) => obj != this.mesh && obj != this.arrowHelper
+      // @ts-ignore
+      && !this.electronicsWorld.connections.some(conn => conn.line === obj)
     )
     const intersects = this.raycaster.intersectObjects(otherObjects)
 

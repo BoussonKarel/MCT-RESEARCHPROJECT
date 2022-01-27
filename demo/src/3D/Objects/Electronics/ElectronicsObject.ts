@@ -2,6 +2,7 @@ import * as THREE from "three"
 import { Pin, PinList } from "./Pin"
 import { BaseObject } from "../BaseObject"
 import { Connection } from "./Connection"
+import { ElectronicsWorld } from "../../ElectronicsWorld"
 
 
 
@@ -11,6 +12,8 @@ const pinMaterial = new THREE.MeshBasicMaterial({
 })
 
 export class ElectronicsObject extends BaseObject {
+  electronicsWorld: ElectronicsWorld
+  
   // Pins & connections
   pins: PinList = {}
   // connections: Connection[] = []
@@ -20,6 +23,8 @@ export class ElectronicsObject extends BaseObject {
 
   constructor() {
     super()
+    
+    this.electronicsWorld = new ElectronicsWorld()
   }
 
   createPin(name: string, position: THREE.Vector3, color: THREE.ColorRepresentation = null) {
