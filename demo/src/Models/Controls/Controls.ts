@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { ElectronicsWorld } from "../ElectronicsWorld"
 import { Connection } from "../Objects/Electronics/Connection"
+import { Pin } from "../Objects/Electronics/Pin"
 import { Sizes } from "../Sizes"
 import { World } from "../World"
 
@@ -14,9 +15,10 @@ export class Controls {
 
   electronicsWorld: ElectronicsWorld
 
-  cursor: THREE.Vector2
-  tooltip: Element
+  cursor: THREE.Vector2 = new THREE.Vector2()
+  tooltip: any
 
+  cursorNormalized: THREE.Vector2 = new THREE.Vector2()
   rightMouseDown: boolean = false
   shiftKeyDown: boolean = false
   movementAmplitude = 0.002
@@ -44,9 +46,7 @@ export class Controls {
 
     this.sizes = new Sizes()
 
-    this.cursor = new THREE.Vector2()
-
-    this.tooltip = document.querySelector("#tooltip")
+    this.tooltip = document.querySelector(".tooltip")
 
     this.setMouseEvents()
     this.setKeyboardEvents()
@@ -78,12 +78,15 @@ export class Controls {
   }
 
   onMouseMove(event: MouseEvent) {
-    // Update cursor position
-    this.cursor.x = (event.clientX / this.sizes.width) * 2 - 1 // -1 to 1 (left to right)
-    this.cursor.y = -(event.clientY / this.sizes.height) * 2 + 1 // -1 to 1 (bottom to top)
+    // Update cursorNormalized position
+    this.cursorNormalized.x = (event.clientX / this.sizes.width) * 2 - 1 // -1 to 1 (left to right)
+    this.cursorNormalized.y = -(event.clientY / this.sizes.height) * 2 + 1 // -1 to 1 (bottom to top)
+
+    this.cursor.x = event.clientX
+    this.cursor.y = event.clientY
 
     // Set raycaster from camera
-    this.raycaster.setFromCamera(this.cursor, this.camera)
+    this.raycaster.setFromCamera(this.cursorNormalized, this.camera)
 
     // Look around (on right click)
     this.updateCameraRotation(event.movementX, event.movementY)
@@ -176,9 +179,30 @@ export class Controls {
 
     this.world.pinMeshes.filter(p => !this.selectedPinMeshes.includes(p)).forEach(p => p.visible = false)
     
-
     this.hoveringPinMesh = intersects.length > 0 ? intersects[0].object : null
     if (this.hoveringPinMesh) this.hoveringPinMesh.visible = true
+
+    this.checkTooltip()
+  }
+
+  checkTooltip() {
+    if (this.hoveringPinMesh) {
+      // Show tooltip
+      this.tooltip.classList.add("tooltip--visible")
+
+      // Set tooltip position
+      this.tooltip.style.left = (this.cursor.x + 20).toString() + "px"
+      this.tooltip.style.top = this.cursor.y.toString() + "px"
+
+      // Set tooltip text
+      const pin : Pin = this.hoveringPinMesh.userData.pin
+      const pinKey = Object.keys(pin.parent.pins).filter(k => pin.parent.pins[k] === pin)
+      
+      this.tooltip.innerHTML = pinKey
+    } else {
+      // Hide tooltip
+      this.tooltip.classList.remove("tooltip--visible")
+    }
   }
 
   pickPin() {
