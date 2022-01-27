@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import { Debug } from '../Debug';
 import { World } from "../World";
-import { Arduino } from './Arduino';
+import { Arduino } from './Electronics/Arduino';
+import { UltrasoneSensor } from './Electronics/UltrasoneSensor';
 import { SimpleCube } from "./SimpleCube";
-import { UltrasoneSensor } from './UltrasoneSensor';
 
 let arduino = null
 export class DebugSpawner {

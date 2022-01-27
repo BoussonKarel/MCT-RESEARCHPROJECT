@@ -1,6 +1,6 @@
 import "./style.css"
-import { World } from "./3D/World"
-import { DebugSpawner } from "./3D/Objects/DebugSpawner"
+import { World } from "./Models/World"
+import { DebugSpawner } from "./Models/Objects/DebugSpawner"
 
 const world = new World()
 

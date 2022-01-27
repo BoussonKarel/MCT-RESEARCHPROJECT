@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { ElectronicsObject } from "./Electronics/ElectronicsObject"
+import { ElectronicsObject } from "./ElectronicsObject"
 
 let instance: Arduino = null
 

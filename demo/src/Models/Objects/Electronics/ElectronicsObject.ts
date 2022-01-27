@@ -28,6 +28,30 @@ export class ElectronicsObject extends BaseObject {
     this.electronicsWorld.components.push(this)
   }
 
+  getPinsByString(search: string) {
+    return Object.keys(this.pins)
+      .filter(e => e.toLowerCase().includes(search.toLowerCase()))
+      .reduce((obj, key) => {
+        obj[key] = this.pins[key]
+        return obj
+      }, {})
+  }
+
+  getPath(from: Pin, toObject: ElectronicsObject, search: string) {
+    const pins: PinList = toObject.getPinsByString(search)
+    let result = []
+
+    for (const to of Object.values(pins)) {
+      const path = this.electronicsWorld.checkConnection(
+        from,
+        to
+      )
+      if (path.length > 0) result = path
+    }
+
+    return result;
+  }
+
   createPin(name: string, position: THREE.Vector3, color: THREE.ColorRepresentation = null) {
     let material = pinMaterial
     if (color) material = new THREE.MeshBasicMaterial({color})

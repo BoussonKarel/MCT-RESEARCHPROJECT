@@ -1,6 +1,7 @@
 import * as THREE from "three"
-import { ElectronicsObject } from "./Electronics/ElectronicsObject"
 import { Arduino } from "./Arduino"
+import { ElectronicsObject } from "./ElectronicsObject"
+import { Pin, PinList } from "./Pin"
 
 let instance: UltrasoneSensor = null
 
@@ -75,29 +76,17 @@ export class UltrasoneSensor extends ElectronicsObject {
     if (arduinos.length < 1) return false
     const arduino = arduinos[0]
 
-    // Check if Arduino 5V (1) is connected to Ultrasone Vcc
-    const pathVcc = this.electronicsWorld.checkConnection(
-      this.pins["Vcc"],
-      arduino.pins["5V1"]
-    )
+    // Check if an Arduino 5V pin is connected to Ultrasone Vcc
+    const pathVcc = this.getPath(this.pins["Vcc"], arduino, "5V")
 
     // Check if Arduino D3 is connected to Ultrasone Trig
-    const pathTrig = this.electronicsWorld.checkConnection(
-      this.pins["Trig"],
-      arduino.pins["D3"]
-    )
+    const pathTrig = this.getPath(this.pins["Trig"], arduino, "D3")
 
     // Check if Arduino D2 is connected to Ultrasone Echo
-    const pathEcho = this.electronicsWorld.checkConnection(
-      this.pins["Echo"],
-      arduino.pins["D2"]
-    )
+    const pathEcho = this.getPath(this.pins["Echo"], arduino, "D2")
 
-    // Check if Arduino GND (1) is connected to Ultrasone GND
-    const pathGND = this.electronicsWorld.checkConnection(
-      this.pins["GND"],
-      arduino.pins["GND1"]
-    )
+    // Check if an Arduino GND is connected to Ultrasone GND
+    const pathGND = this.getPath(this.pins["GND"], arduino, "GND")
 
     console.log({pathVcc}, {pathTrig}, {pathEcho}, {pathGND})
     this.correctlyConnected = false

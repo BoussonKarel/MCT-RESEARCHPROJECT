@@ -7,9 +7,8 @@ import { Sizes } from "./Sizes"
 import { Time } from "./Time"
 import { Debug } from "./Debug"
 
-import { Floor } from "./Objects/Floor"
-import { Desk } from "./Objects/Desk"
-import { Pin } from "./Objects/Electronics/Pin"
+import { Floor } from "./Objects/Environment/Floor"
+import { Desk } from "./Objects/Environment/Desk"
 
 let world: World = null
 
