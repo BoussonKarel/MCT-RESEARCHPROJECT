@@ -68,9 +68,19 @@ export class LEDStrip extends ElectronicsObject {
 
   addLights() {
     // first light at 0,-45,0
-    const sphere = new THREE.Mesh(new THREE.SphereGeometry(3), new THREE.MeshBasicMaterial({color: 0xff0000}))
-    sphere.position.y += -45
-    this.mesh.add(sphere)
+    const localPosition = new THREE.Vector3(0, -45, 3)
+    const geometry = new THREE.SphereGeometry(3)
+    const material = new THREE.MeshBasicMaterial({color: 0x00ff00})
+    material.transparent = true
+    material.opacity = .5
+    // 6 lights
+    for (let i = 0; i < 6; i++) {
+      const lightHelper = new THREE.Mesh(geometry, material)
+      this.mesh.add(lightHelper)
+      lightHelper.position.copy(localPosition)
+
+      localPosition.y += 15
+    }
   }
 
   addPins() {
