@@ -37,7 +37,7 @@ export class ElectronicsObject extends BaseObject {
       }, {})
   }
 
-  getPath(from: Pin, toObject: ElectronicsObject, search: string) {
+  getPathByString(from: Pin, toObject: ElectronicsObject, search: string) {
     const pins: PinList = toObject.getPinsByString(search)
     let result = []
 

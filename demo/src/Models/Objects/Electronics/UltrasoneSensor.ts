@@ -77,16 +77,16 @@ export class UltrasoneSensor extends ElectronicsObject {
     const arduino = arduinos[0]
 
     // Check if an Arduino 5V pin is connected to Ultrasone Vcc
-    const pathVcc = this.getPath(this.pins["Vcc"], arduino, "5V")
+    const pathVcc = this.getPathByString(this.pins["Vcc"], arduino, "5V")
 
     // Check if Arduino D3 is connected to Ultrasone Trig
-    const pathTrig = this.getPath(this.pins["Trig"], arduino, "D3")
+    const pathTrig = this.getPathByString(this.pins["Trig"], arduino, "D3")
 
     // Check if Arduino D2 is connected to Ultrasone Echo
-    const pathEcho = this.getPath(this.pins["Echo"], arduino, "D2")
+    const pathEcho = this.getPathByString(this.pins["Echo"], arduino, "D2")
 
     // Check if an Arduino GND is connected to Ultrasone GND
-    const pathGND = this.getPath(this.pins["GND"], arduino, "GND")
+    const pathGND = this.getPathByString(this.pins["GND"], arduino, "GND")
 
     console.log({pathVcc}, {pathTrig}, {pathEcho}, {pathGND})
     this.correctlyConnected = false
