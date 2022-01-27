@@ -119,13 +119,13 @@ export class UltrasoneSensor extends ElectronicsObject {
     const names = ["Vcc", "Trig", "Echo", "GND"]
 
     // first pin location
-    const shift = new THREE.Vector3(-4.5, -16, 1)
+    const localCoords = new THREE.Vector3(-4.5, -16, 1)
     for (const name of names) {
-      const pos = new THREE.Vector3().copy(shift)
+      const pos = new THREE.Vector3().copy(localCoords)
 
       this.createPin(name, pos)
 
-      shift.x += 3 // move to next pin (3mm apart)
+      localCoords.x += 3 // move to next pin (3mm apart)
     }
   }
 

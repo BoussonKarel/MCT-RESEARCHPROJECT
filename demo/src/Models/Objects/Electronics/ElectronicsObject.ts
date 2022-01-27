@@ -52,17 +52,15 @@ export class ElectronicsObject extends BaseObject {
     return result;
   }
 
-  createPin(name: string, position: THREE.Vector3, color: THREE.ColorRepresentation = null) {
+  createPin(name: string, localCoords: THREE.Vector3, color: THREE.ColorRepresentation = null) {
     let material = pinMaterial
     if (color) material = new THREE.MeshBasicMaterial({color})
     
     const pinMesh = new THREE.Mesh(pinGeometry, material)
-    pinMesh.position.copy(position)
+    pinMesh.position.copy(localCoords)
     this.mesh.add(pinMesh) // Adds it to mesh and places it at local (0,0,0)
     
     pinMesh.visible = false
-
-    console.log(name, pinMesh)
 
     const newPin = new Pin(this, pinMesh)
 

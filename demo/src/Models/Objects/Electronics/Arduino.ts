@@ -63,65 +63,65 @@ export class Arduino extends ElectronicsObject {
 
   addPins() {
     // BOTTOM ROW
-    const bottomRowShift = new THREE.Vector3(-5.5, -24, 7.5) // move along x, 3 apart
+    const bottomRowLocalCoords = new THREE.Vector3(-5.5, -24, 7.5) // move along x, 3 apart
     // First
     // Second
-    bottomRowShift.x += 3
+    bottomRowLocalCoords.x += 3
     this.createPin(
       "5V1",
-      new THREE.Vector3().copy(bottomRowShift),
+      new THREE.Vector3().copy(bottomRowLocalCoords),
       'red'
     )
     // Third, fourth
-    bottomRowShift.x += 2 * 3
+    bottomRowLocalCoords.x += 2 * 3
     // Fifth
-    bottomRowShift.x += 3
+    bottomRowLocalCoords.x += 3
     this.createPin(
       "5V2",
-      new THREE.Vector3().copy(bottomRowShift),
+      new THREE.Vector3().copy(bottomRowLocalCoords),
       'red'
     )
     // Sixth
-    bottomRowShift.x += 3
+    bottomRowLocalCoords.x += 3
     this.createPin(
       "GND1",
-      new THREE.Vector3().copy(bottomRowShift),
+      new THREE.Vector3().copy(bottomRowLocalCoords),
       'blue'
     )
     // Seventh
-    bottomRowShift.x += 3
+    bottomRowLocalCoords.x += 3
     this.createPin(
       "GND2",
-      new THREE.Vector3().copy(bottomRowShift),
+      new THREE.Vector3().copy(bottomRowLocalCoords),
       'blue'
     )
 
     // TOP ROW
-    const topRowShift = new THREE.Vector3(-16, 24, 7.5) // move along x, 3 apart
+    const topRowLocalCoords = new THREE.Vector3(-16, 24, 7.5) // move along x, 3 apart
     // First, second, third
-    topRowShift.x += 2*3
+    topRowLocalCoords.x += 2*3
     // Fourth
-    topRowShift.x += 3
+    topRowLocalCoords.x += 3
     this.createPin(
       "GND3",
-      new THREE.Vector3().copy(topRowShift),
+      new THREE.Vector3().copy(topRowLocalCoords),
       'blue'
     )
 
-    topRowShift.x += 6*3 + 1 + 4*3 // 5-10 + GAP + 11-14
+    topRowLocalCoords.x += 6*3 + 1 + 4*3 // 5-10 + GAP + 11-14
     // 15
-    topRowShift.x += 3
+    topRowLocalCoords.x += 3
     this.createPin(
       "D3",
       // new THREE.Vector3().copy(this.mesh.position).add(topRowShift)
-      new THREE.Vector3().copy(topRowShift)
+      new THREE.Vector3().copy(topRowLocalCoords)
     )
     // 16
-    topRowShift.x += 3
+    topRowLocalCoords.x += 3
     this.createPin(
       "D2",
       // new THREE.Vector3().copy(topRowShift)
-      new THREE.Vector3().copy(topRowShift)
+      new THREE.Vector3().copy(topRowLocalCoords)
     )
   }
 }
