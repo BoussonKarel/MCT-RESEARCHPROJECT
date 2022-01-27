@@ -35,7 +35,7 @@ export class Arduino extends ElectronicsObject {
     this.addPins()
 
     // Physics
-    // this.createSimplePhysicsBox()
+    this.createSimplePhysicsBox()
 
     // Events etc
     this.world.time.on("tick", () => {})
