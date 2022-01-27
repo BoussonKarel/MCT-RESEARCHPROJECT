@@ -9,8 +9,8 @@ interface ArduinoOptions {
 }
 
 const defaultOptions: ArduinoOptions = {
-  position: new THREE.Vector3(0, .75, 0),
-  rotation: new THREE.Euler(-Math.PI/2, 0, 0),
+  position: new THREE.Vector3(0, 0.75, 0),
+  rotation: new THREE.Euler(-Math.PI / 2, 0, -Math.PI/2),
 }
 
 export class Arduino extends ElectronicsObject {
@@ -35,12 +35,10 @@ export class Arduino extends ElectronicsObject {
     this.addPins()
 
     // Physics
-    this.createSimplePhysicsBox()
+    // this.createSimplePhysicsBox()
 
     // Events etc
-    this.world.time.on("tick", () => {
-
-    })
+    this.world.time.on("tick", () => {})
 
     // Wrap things up in parent class
     this.finishConstructor()
@@ -64,16 +62,64 @@ export class Arduino extends ElectronicsObject {
   }
 
   addPins() {
-    // const names = ["1", "2", "3", "4"]
+    // BOTTOM ROW
+    const bottomRowShift = new THREE.Vector3(-5, -24.5, 7.5) // move along x, 3 apart
+    // First
+    // Second
+    bottomRowShift.x += 3
+    this.createPin(
+      "5V1",
+      new THREE.Vector3().copy(this.mesh.position).add(bottomRowShift),
+      'red'
+    )
+    // Third, fourth
+    bottomRowShift.x += 2 * 3
+    // Fifth
+    bottomRowShift.x += 3
+    this.createPin(
+      "5V2",
+      new THREE.Vector3().copy(this.mesh.position).add(bottomRowShift),
+      'red'
+    )
+    // Sixth
+    bottomRowShift.x += 3
+    this.createPin(
+      "GND1",
+      new THREE.Vector3().copy(this.mesh.position).add(bottomRowShift),
+      'blue'
+    )
+    // Seventh
+    bottomRowShift.x += 3
+    this.createPin(
+      "GND2",
+      new THREE.Vector3().copy(this.mesh.position).add(bottomRowShift),
+      'blue'
+    )
 
-    // // first pin location
-    // const shift = new THREE.Vector3(-4.5, -16, 1)
-    // for (const name of names) {
-    //   const pos = new THREE.Vector3().copy(this.mesh.position).add(shift)
+    // TOP ROW
+    const topRowShift = new THREE.Vector3(-16, 23.5, 7.5) // move along x, 3 apart
+    // First, second, third
+    topRowShift.x += 2*3
+    // Fourth
+    topRowShift.x += 3
+    this.createPin(
+      "GND3",
+      new THREE.Vector3().copy(this.mesh.position).add(topRowShift),
+      'blue'
+    )
 
-    //   this.createPin(name, pos)
-
-    //   shift.x += 3 // move to next pin (3mm apart)
-    // }
+    topRowShift.x += 6*3 + 1 + 4*3 // 5-10 + GAP + 11-14
+    // 15
+    topRowShift.x += 3
+    this.createPin(
+      "D3",
+      new THREE.Vector3().copy(this.mesh.position).add(topRowShift)
+    )
+    // 16
+    topRowShift.x += 3
+    this.createPin(
+      "D2",
+      new THREE.Vector3().copy(this.mesh.position).add(topRowShift)
+    )
   }
 }
