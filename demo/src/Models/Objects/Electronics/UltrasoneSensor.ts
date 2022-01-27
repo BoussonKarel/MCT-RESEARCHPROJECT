@@ -121,7 +121,7 @@ export class UltrasoneSensor extends ElectronicsObject {
     // first pin location
     const shift = new THREE.Vector3(-4.5, -16, 1)
     for (const name of names) {
-      const pos = new THREE.Vector3().copy(this.mesh.position).add(shift)
+      const pos = new THREE.Vector3().copy(shift)
 
       this.createPin(name, pos)
 

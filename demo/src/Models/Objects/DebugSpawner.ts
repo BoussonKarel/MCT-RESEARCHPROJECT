@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { Debug } from '../Debug';
 import { World } from "../World";
 import { Arduino } from './Electronics/Arduino';
+import { LEDStrip } from './Electronics/LEDStrip';
 import { UltrasoneSensor } from './Electronics/UltrasoneSensor';
 import { SimpleCube } from "./SimpleCube";
 
@@ -19,6 +20,7 @@ export class DebugSpawner {
       this.debug.ui.add(this, 'addUltrasone')
       this.debug.ui.add(this, 'addArduino')
       this.debug.ui.add(this, 'logArduino')
+      this.debug.ui.add(this, 'addLEDStrip')
     }
   }
 
@@ -37,5 +39,9 @@ export class DebugSpawner {
 
   logArduino() {
     console.log(arduino)
+  }
+
+  addLEDStrip() {
+    const ledstrip = new LEDStrip()
   }
 }

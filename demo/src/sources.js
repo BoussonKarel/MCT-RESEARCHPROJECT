@@ -19,5 +19,10 @@ export default [
     name: "Arduino",
     type: "gltfModel",
     path: "/models/Arduino/Arduino.glb"
+  },
+  {
+    name: "LEDStrip",
+    type: "gltfModel",
+    path: "/models/LEDStrip/LEDStrip.glb"
   }
 ]

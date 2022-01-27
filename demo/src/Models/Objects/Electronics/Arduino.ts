@@ -63,13 +63,13 @@ export class Arduino extends ElectronicsObject {
 
   addPins() {
     // BOTTOM ROW
-    const bottomRowShift = new THREE.Vector3(-5, -24.5, 7.5) // move along x, 3 apart
+    const bottomRowShift = new THREE.Vector3(-5.5, -24, 7.5) // move along x, 3 apart
     // First
     // Second
     bottomRowShift.x += 3
     this.createPin(
       "5V1",
-      new THREE.Vector3().copy(this.mesh.position).add(bottomRowShift),
+      new THREE.Vector3().copy(bottomRowShift),
       'red'
     )
     // Third, fourth
@@ -78,33 +78,33 @@ export class Arduino extends ElectronicsObject {
     bottomRowShift.x += 3
     this.createPin(
       "5V2",
-      new THREE.Vector3().copy(this.mesh.position).add(bottomRowShift),
+      new THREE.Vector3().copy(bottomRowShift),
       'red'
     )
     // Sixth
     bottomRowShift.x += 3
     this.createPin(
       "GND1",
-      new THREE.Vector3().copy(this.mesh.position).add(bottomRowShift),
+      new THREE.Vector3().copy(bottomRowShift),
       'blue'
     )
     // Seventh
     bottomRowShift.x += 3
     this.createPin(
       "GND2",
-      new THREE.Vector3().copy(this.mesh.position).add(bottomRowShift),
+      new THREE.Vector3().copy(bottomRowShift),
       'blue'
     )
 
     // TOP ROW
-    const topRowShift = new THREE.Vector3(-16, 23.5, 7.5) // move along x, 3 apart
+    const topRowShift = new THREE.Vector3(-16, 24, 7.5) // move along x, 3 apart
     // First, second, third
     topRowShift.x += 2*3
     // Fourth
     topRowShift.x += 3
     this.createPin(
       "GND3",
-      new THREE.Vector3().copy(this.mesh.position).add(topRowShift),
+      new THREE.Vector3().copy(topRowShift),
       'blue'
     )
 
@@ -113,13 +113,15 @@ export class Arduino extends ElectronicsObject {
     topRowShift.x += 3
     this.createPin(
       "D3",
-      new THREE.Vector3().copy(this.mesh.position).add(topRowShift)
+      // new THREE.Vector3().copy(this.mesh.position).add(topRowShift)
+      new THREE.Vector3().copy(topRowShift)
     )
     // 16
     topRowShift.x += 3
     this.createPin(
       "D2",
-      new THREE.Vector3().copy(this.mesh.position).add(topRowShift)
+      // new THREE.Vector3().copy(topRowShift)
+      new THREE.Vector3().copy(topRowShift)
     )
   }
 }

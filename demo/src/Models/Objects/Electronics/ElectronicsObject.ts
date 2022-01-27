@@ -57,10 +57,12 @@ export class ElectronicsObject extends BaseObject {
     if (color) material = new THREE.MeshBasicMaterial({color})
     
     const pinMesh = new THREE.Mesh(pinGeometry, material)
-
-    this.mesh.add(pinMesh) // Adds it to mesh and places it at local (0,0,0)
     pinMesh.position.copy(position)
+    this.mesh.add(pinMesh) // Adds it to mesh and places it at local (0,0,0)
+    
     pinMesh.visible = false
+
+    console.log(name, pinMesh)
 
     const newPin = new Pin(this, pinMesh)
 
