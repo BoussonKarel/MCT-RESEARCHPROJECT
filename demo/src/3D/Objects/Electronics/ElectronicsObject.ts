@@ -25,6 +25,7 @@ export class ElectronicsObject extends BaseObject {
     super()
     
     this.electronicsWorld = new ElectronicsWorld()
+    this.electronicsWorld.components.push(this)
   }
 
   createPin(name: string, position: THREE.Vector3, color: THREE.ColorRepresentation = null) {

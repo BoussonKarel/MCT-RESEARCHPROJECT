@@ -1,15 +1,20 @@
+import { EventEmitter } from "events";
 import * as THREE from "three"
 import { Connection } from "./Objects/Electronics/Connection";
+import { ElectronicsObject } from "./Objects/Electronics/ElectronicsObject";
 import { Pin } from "./Objects/Electronics/Pin";
 import { World } from "./World";
 
 let instance = null
 
-export class ElectronicsWorld {
+export class ElectronicsWorld extends EventEmitter {
   world: World
+  components: ElectronicsObject[] = []
   connections: Connection[] = []
 
   constructor() {
+    super()
+    
     if (instance) return instance
     instance = this
 
@@ -50,14 +55,18 @@ export class ElectronicsWorld {
       a: pin2,
       b: pin1,
     })
+
+    this.emit("connectionChange")
   }
 
   removeConnection(pin1: Pin, pin2: Pin) {
     this.connections = this.connections.filter(p => (p.a != pin1 && p.b != pin2) && (p.a != pin2 && p.b != pin1))
+    this.emit("connectionChange")
   }
 
   removeConnectionsOnPin(pin: Pin) {
     this.connections = this.connections.filter(p => p.a != pin && p.b != pin)
+    this.emit("connectionChange")
   }
 
   checkConnection(goal: Pin, v: Pin, discovered = [], path = []) {

@@ -1,5 +1,6 @@
 import * as THREE from "three"
 import { ElectronicsObject } from "./Electronics/ElectronicsObject"
+import { Arduino } from "./Arduino"
 
 let instance: UltrasoneSensor = null
 
@@ -18,7 +19,7 @@ interface UltrasoneOptions {
 
 const defaultOptions: UltrasoneOptions = {
   position: new THREE.Vector3(0, .75, 0),
-  range: { min: 0, max: 4 },
+  range: { min: 0.02, max: 4 },
   rotation: new THREE.Euler(-Math.PI/2, 0, 0),
 }
 
@@ -27,6 +28,8 @@ const defaultDirection = new THREE.Vector3(0, 0, 1) // Along z-axis
 export class UltrasoneSensor extends ElectronicsObject {
   raycaster: THREE.Raycaster
   arrowHelper: THREE.ArrowHelper
+
+  correctlyConnected = false
 
   constructor(options?: UltrasoneOptions) {
     super()
@@ -56,8 +59,52 @@ export class UltrasoneSensor extends ElectronicsObject {
       this.measureDistances()
     })
 
+    this.electronicsWorld.on("connectionChange", () => {
+      this.checkIfConnectedCorrectly()
+    })
+
     // Wrap things up in parent class
     this.finishConstructor()
+  }
+
+  checkIfConnectedCorrectly() {
+    // Get Arduino
+    const arduinos = this.electronicsWorld.components.filter(c => c instanceof Arduino)
+
+    // There are no arduino's
+    if (arduinos.length < 1) return false
+    const arduino = arduinos[0]
+
+    // Check if Arduino 5V (1) is connected to Ultrasone Vcc
+    const pathVcc = this.electronicsWorld.checkConnection(
+      this.pins["Vcc"],
+      arduino.pins["5V1"]
+    )
+
+    // Check if Arduino D3 is connected to Ultrasone Trig
+    const pathTrig = this.electronicsWorld.checkConnection(
+      this.pins["Trig"],
+      arduino.pins["D3"]
+    )
+
+    // Check if Arduino D2 is connected to Ultrasone Echo
+    const pathEcho = this.electronicsWorld.checkConnection(
+      this.pins["Echo"],
+      arduino.pins["D2"]
+    )
+
+    // Check if Arduino GND (1) is connected to Ultrasone GND
+    const pathGND = this.electronicsWorld.checkConnection(
+      this.pins["GND"],
+      arduino.pins["GND1"]
+    )
+
+    console.log({pathVcc}, {pathTrig}, {pathEcho}, {pathGND})
+    this.correctlyConnected = false
+    if (pathVcc.length > 0 && pathTrig.length > 0 && pathEcho.length > 0 && pathGND.length > 0) {
+      console.log("Connected succesfully!")
+      this.correctlyConnected = true
+    }
   }
 
   setup3D(options: UltrasoneOptions) {
@@ -80,7 +127,7 @@ export class UltrasoneSensor extends ElectronicsObject {
   }
 
   addPins() {
-    const names = ["1", "2", "3", "4"]
+    const names = ["Vcc", "Trig", "Echo", "GND"]
 
     // first pin location
     const shift = new THREE.Vector3(-4.5, -16, 1)
@@ -119,6 +166,7 @@ export class UltrasoneSensor extends ElectronicsObject {
   }
 
   measureDistances() {
+    if (!this.correctlyConnected) return
     // Update raycaster and arrowhelper
     this.setRaycaster()
 
@@ -131,7 +179,7 @@ export class UltrasoneSensor extends ElectronicsObject {
     const intersects = this.raycaster.intersectObjects(otherObjects)
 
     if (intersects.length > 0) {
-      const distance = Math.max(Math.round(intersects[0].distance * 100), 2)
+      const distance = Math.round(intersects[0].distance * 100)
       console.log("De ultrasone meet: ", distance, "centimeter")
     }
   }
