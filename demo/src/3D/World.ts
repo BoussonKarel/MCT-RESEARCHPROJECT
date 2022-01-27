@@ -25,7 +25,7 @@ export class World {
   resources: Resources
 
   grabbables: THREE.Object3D[] = []
-  pinMeshes: THREE.Object3D[] = [] 
+  pinMeshes: THREE.Object3D[] = []
 
   constructor() {
     if (world) return world

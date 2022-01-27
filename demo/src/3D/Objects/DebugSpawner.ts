@@ -5,6 +5,7 @@ import { Arduino } from './Arduino';
 import { SimpleCube } from "./SimpleCube";
 import { UltrasoneSensor } from './UltrasoneSensor';
 
+let arduino = null
 export class DebugSpawner {
   world: World
   debug: Debug
@@ -17,6 +18,7 @@ export class DebugSpawner {
       this.debug.ui.add(this, 'addCube')
       this.debug.ui.add(this, 'addUltrasone')
       this.debug.ui.add(this, 'addArduino')
+      this.debug.ui.add(this, 'logArduino')
     }
   }
 
@@ -30,6 +32,10 @@ export class DebugSpawner {
   }
 
   addArduino() {
-    const arduino = new Arduino()
+    arduino = new Arduino()
+  }
+
+  logArduino() {
+    console.log(arduino)
   }
 }

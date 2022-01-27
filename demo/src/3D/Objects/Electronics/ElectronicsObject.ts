@@ -13,7 +13,7 @@ const pinMaterial = new THREE.MeshBasicMaterial({
 export class ElectronicsObject extends BaseObject {
   // Pins & connections
   pins: PinList = {}
-  connections: Connection[] = []
+  // connections: Connection[] = []
 
   // Extra specs
   resistance = 0

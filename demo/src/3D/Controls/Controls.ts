@@ -1,5 +1,6 @@
 import * as THREE from "three"
-import { addConnection } from "../Objects/Electronics/Connection"
+import { ElectronicsWorld } from "../ElectronicsWorld"
+import { Connection } from "../Objects/Electronics/Connection"
 import { Sizes } from "../Sizes"
 import { World } from "../World"
 
@@ -11,7 +12,11 @@ export class Controls {
   camera: THREE.PerspectiveCamera
   sizes: Sizes
 
+  electronicsWorld: ElectronicsWorld
+
   cursor: THREE.Vector2
+  tooltip: Element
+
   rightMouseDown: boolean = false
   shiftKeyDown: boolean = false
   movementAmplitude = 0.002
@@ -41,8 +46,12 @@ export class Controls {
 
     this.cursor = new THREE.Vector2()
 
+    this.tooltip = document.querySelector("#tooltip")
+
     this.setMouseEvents()
     this.setKeyboardEvents()
+
+    this.electronicsWorld = new ElectronicsWorld()
   }
 
   //#region Events
@@ -166,6 +175,7 @@ export class Controls {
     const intersects = this.raycaster.intersectObjects(this.world.pinMeshes)
 
     this.world.pinMeshes.filter(p => !this.selectedPinMeshes.includes(p)).forEach(p => p.visible = false)
+    
 
     this.hoveringPinMesh = intersects.length > 0 ? intersects[0].object : null
     if (this.hoveringPinMesh) this.hoveringPinMesh.visible = true
@@ -192,7 +202,7 @@ export class Controls {
     const pin1 = pinMeshes[0].userData.pin
     const pin2 = pinMeshes[1].userData.pin
 
-    addConnection(pin1, pin2)
+    this.electronicsWorld.addConnection(pin1, pin2)
   }
   //#endregion
 
