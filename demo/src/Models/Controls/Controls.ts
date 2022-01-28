@@ -13,6 +13,9 @@ export class Controls {
   camera: THREE.PerspectiveCamera
   sizes: Sizes
 
+  htmlControls: HTMLDivElement
+  htmlControlsClose: HTMLButtonElement
+
   electronicsWorld: ElectronicsWorld
 
   cursor: THREE.Vector2 = new THREE.Vector2()
@@ -28,7 +31,7 @@ export class Controls {
   movingObject: THREE.Object3D
   movingMinY: number
   movementPlane = new THREE.Plane()
-  diffY = 0.05
+  diffY = 0.02
   shift = new THREE.Vector3() // Distance between intersect[x].object.position - intersect[x].point
 
   // Pin stuff
@@ -41,6 +44,13 @@ export class Controls {
   constructor(camera: THREE.PerspectiveCamera) {
     this.world = new World()
 
+    // Instructions
+    this.htmlControls = document.querySelector("#js-controls")
+    this.htmlControlsClose = document.querySelector("#js-controls-close")
+
+    this.htmlControlsClose.addEventListener("click", () => this.hideInstructions())
+    this.showInstructions()
+
     this.camera = camera
     this.camera.rotation.reorder("YXZ")
 
@@ -52,6 +62,18 @@ export class Controls {
     this.setKeyboardEvents()
 
     this.electronicsWorld = new ElectronicsWorld()
+  }
+
+  showInstructions() {
+    this.htmlControls.classList.remove("u-hidden")
+  }
+
+  hideInstructions() {
+    this.htmlControls.classList.add("u-hidden")
+  }
+
+  toggleInstructions() {
+    this.htmlControls.classList.toggle("u-hidden")
   }
 
   //#region Events
@@ -115,6 +137,7 @@ export class Controls {
     }
 
     if (event.code === "KeyR") this.rotateObject()
+    if (event.key === "Escape") this.toggleInstructions()
   }
 
   onKeyUp(event: KeyboardEvent) {

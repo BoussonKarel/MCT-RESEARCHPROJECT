@@ -2,7 +2,7 @@
 # First, we build our app to be compiled as Javascript
 FROM node:16.9.1-alpine as build-container
 WORKDIR /usr/app
-COPY ["package.json", "package-lock.json", "tsconfig.json", "./"]
+COPY ["package.json", "package-lock.json", "./"]
 RUN npm ci
 COPY . .
 # /usr/app/dist

@@ -94,11 +94,13 @@ export class World {
 
   setDebugOptions() {
     if (this.debug.active) {
-      this.debug.ui.add(this.camera, 'fov').min(15).max(100).step(1).name('Camera FOV').onChange(() => {
+      const cameraFolder = this.debug.ui.addFolder("Camera")
+
+      cameraFolder.add(this.camera, 'fov').min(15).max(100).step(1).name('Camera FOV').onChange(() => {
         world.camera.updateProjectionMatrix()
       })
       
-      this.debug.ui.add(this.camera, 'zoom').min(1).max(5).step(.05).name('Camera Zoom').onChange(() => {
+      cameraFolder.add(this.camera, 'zoom').min(1).max(5).step(.05).name('Camera Zoom').onChange(() => {
         world.camera.updateProjectionMatrix()
       })
     }

@@ -19,7 +19,7 @@ interface UltrasoneOptions {
 }
 
 const defaultOptions: UltrasoneOptions = {
-  position: new THREE.Vector3(0, .75, 0),
+  position: new THREE.Vector3(0.1, .75, 0),
   range: { min: 0.02, max: 4 },
   rotation: new THREE.Euler(-Math.PI/2, 0, 0),
 }
@@ -30,7 +30,10 @@ export class UltrasoneSensor extends ElectronicsObject {
   raycaster: THREE.Raycaster
   arrowHelper: THREE.ArrowHelper
 
+  range: Range
+
   correctlyConnected = false
+  measurement: number = null
 
   constructor(options?: UltrasoneOptions) {
     super()
@@ -45,6 +48,8 @@ export class UltrasoneSensor extends ElectronicsObject {
       instance.setPR(options.position, options.rotation)
       return instance
     } else instance = this
+
+    this.range = options.range
 
     // ThreeJS
     this.setup3D(options)
@@ -129,7 +134,7 @@ export class UltrasoneSensor extends ElectronicsObject {
     }
   }
 
-  setRaycaster(range: Range = defaultOptions.range) {
+  setRaycaster() {
     // defaultDirection = world z-axis
     // Rotate this so it matches the object z-axis (apply the same quaternion)
     const direction = new THREE.Vector3()
@@ -139,8 +144,8 @@ export class UltrasoneSensor extends ElectronicsObject {
     // if the raycaster doesn't exist: create
     if (!this.raycaster) {
       this.raycaster = new THREE.Raycaster()
-      this.raycaster.near = range.min
-      this.raycaster.far = range.max
+      this.raycaster.near = this.range.min
+      this.raycaster.far = this.range.max
 
       this.arrowHelper = new THREE.ArrowHelper()
       this.arrowHelper.setLength(0.5)
@@ -155,7 +160,10 @@ export class UltrasoneSensor extends ElectronicsObject {
   }
 
   measureDistances() {
-    if (!this.correctlyConnected) return
+    if (!this.correctlyConnected) {
+      this.measurement = null
+      return
+    }
     // Update raycaster and arrowhelper
     this.setRaycaster()
 
@@ -168,8 +176,10 @@ export class UltrasoneSensor extends ElectronicsObject {
     const intersects = this.raycaster.intersectObjects(otherObjects)
 
     if (intersects.length > 0) {
-      const distance = Math.round(intersects[0].distance * 100)
-      console.log("De ultrasone meet: ", distance, "centimeter")
-    }
+      this.measurement = Math.round(intersects[0].distance * 100)
+    } else this.measurement = this.range.max*100
+
+    
+    console.log("De ultrasone meet: ", this.measurement, "centimeter")
   }
 }

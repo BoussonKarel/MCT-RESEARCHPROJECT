@@ -1,7 +1,7 @@
 import "./style.css"
-import { World } from "./Models/World"
+import { UltrasoneScenario } from "./Scenarios/UltrasoneScenario"
 import { DebugSpawner } from "./Models/Objects/DebugSpawner"
 
-const world = new World()
+const scenario1 = new UltrasoneScenario()
 
-const debugSpawner = new DebugSpawner()
+const spawner = new DebugSpawner()

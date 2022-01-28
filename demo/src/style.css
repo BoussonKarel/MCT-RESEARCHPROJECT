@@ -6,6 +6,13 @@
 html,
 body {
     overflow: hidden;
+
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+}
+
+.u-hidden {
+    display: none !important;
 }
 
 .webgl {
@@ -22,7 +29,7 @@ body {
     /* top: 0;
     left: 0; */
 
-    border-radius: 3px;
+    border-radius: 4px;
     padding: 2px 4px;
 
     background-color: white;
@@ -36,4 +43,93 @@ body {
 
 .tooltip--visible {
     opacity: 0.5;
+}
+
+.c-overlay {
+    background-color: rgba(0,0,0, .5);
+    position: fixed;
+    z-index: 5;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.c-box {
+    background-color: white;
+    padding: 2em;
+    z-index: 5;
+
+    border-radius: 0.5em;
+
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.c-box__close {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    width: 24px;
+    height: 24px;
+}
+
+.c-box__close:hover,
+.c-box__close:focus {
+    outline-color: #555555;
+    color: #555555;
+}
+
+.c-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.c-control {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.c-attributions {
+    margin-top: 1em;
+    font-size: 0.8em;
+    display: flex;
+    /* flex-direction: column; */
+    gap: 1em;
+}
+
+.c-attributions a {
+    color: inherit;
+}
+
+.c-control__img {
+    width: 48px;
+}
+
+.c-control__key {
+    font-family: monospace;
+    font-weight: bold;
+
+    border: 1px solid black;
+    text-align: center;
+
+    padding: 0.25em 1ch;
+    border-radius: 0.25em;
+}
+
+.c-control__key--main {
+    margin-left: 0.75em;
 }

@@ -9,7 +9,7 @@ interface ArduinoOptions {
 }
 
 const defaultOptions: ArduinoOptions = {
-  position: new THREE.Vector3(0, 0.75, 0),
+  position: new THREE.Vector3(-0.1, 0.75, 0),
   rotation: new THREE.Euler(-Math.PI / 2, 0, -Math.PI/2),
 }
 

@@ -30,7 +30,7 @@ export class BaseObject {
 
     // Add mesh to scene
     this.world.scene.add(this.mesh)
-    console.log("Add mesh to world")
+    
     // Add physics body to physics world
     if (this.physicsBody) this.physics.addToPhysicsWorld(this.mesh, this.physicsBody)
   }

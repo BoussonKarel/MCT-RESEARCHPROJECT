@@ -7,14 +7,62 @@
     <title>Vite App</title>
   </head>
   <body>
-    <div class="instructions">
+    <div id="js-controls" class="c-overlay">
+      <div class="c-box">
+        <button id="js-controls-close" class="c-box__close">
+          <svg class="c-box__close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="c-controls">
+          <div class="c-control">
+            <img src="/img/right-click.png" class="c-control__img" />
+            <div class="c-control__text">
+              Gebruik rechtermuisknop om rond te kijken.
+            </div>
+          </div>
+          <div class="c-control">
+            <img src="/img/left-click.png" class="c-control__img" />
+            <div class="c-control__text">
+              Gebruik linkermuisknop voor interactie met objecten (zoals
+              verplaatsen).
+            </div>
+          </div>
+          <div class="c-control">
+            <img src="/img/left-click.png" class="c-control__img" />
+            <div class="c-control__key">SHIFT</div>
+            <div class="c-control__text">
+              Houdt shift ingedrukt wanneer je een object omhoog/omlaag wil
+              verplaatsen.
+            </div>
+          </div>
+
+          <div class="c-control">
+            <div class="c-control__key c-control__key--main">R</div>
+            <div class="c-control__text">
+              Draai een object door op R te drukken.
+            </div>
+          </div>
+
+          <div class="c-attributions">
+            <a href="https://www.flaticon.com/free-icons/left-click" title="left click icon">Left click icon created by Smashicons - Flaticon</a>
+            <a href="https://www.flaticon.com/free-icons/right-click" title="right click icon" >Right click icon created by Smashicons - Flaticon</a>
+            <a href="https://www.flaticon.com/free-icons/scroll" title="scroll icon">Scroll icon created by Smashicons - Flaticon</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tooltip">Tooltip for pins</div>
+    <canvas class="webgl"></canvas>
+    <!-- <div class="instructions">
       Do this and that and stuff
     </div>
     <div class="feedback">
       You did something wrong, oopsie
-    </div>
-    <div class="tooltip">Tooltip for pins</div>
-    <canvas class="webgl"></canvas>
+    </div> -->
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
