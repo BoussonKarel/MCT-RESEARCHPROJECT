@@ -11,8 +11,30 @@ body {
     font-size: 16px;
 }
 
+img {
+    max-width: 100%;
+}
+
 .u-hidden {
     display: none !important;
+}
+
+.c-sidebar {
+    position: fixed;
+    z-index: 2;
+
+    top: 1em;
+    bottom: 1em;
+    left: 0;
+
+    width: 100%;
+    max-width: 20em;
+
+    border-left-radius: 1em;
+
+    background-color: white;
+
+    padding: 3em;
 }
 
 .webgl {
