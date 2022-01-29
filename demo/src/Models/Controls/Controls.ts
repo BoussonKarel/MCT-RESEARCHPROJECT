@@ -173,10 +173,16 @@ export class Controls {
       this.shiftKeyDown ? pvNormal : phNormal,
       pIntersect
     )
+
+    
+    // Set cursor
+    this.world.canvas.style.cursor = this.shiftKeyDown ? "ns-resize" : "grabbing"
   }
 
   releaseObject() {
     this.movingObject = null
+    // Set cursor
+    this.world.canvas.style.cursor = ""
   }
 
   rotateObject() {
@@ -225,6 +231,7 @@ export class Controls {
     } else {
       // Hide tooltip
       this.tooltip.classList.remove("tooltip--visible")
+      this.tooltip.innerHTML = ""
     }
   }
 

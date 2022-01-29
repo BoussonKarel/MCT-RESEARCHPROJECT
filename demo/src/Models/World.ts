@@ -14,7 +14,7 @@ let world: World = null
 
 export class World {
   debug: Debug
-  canvas: Element
+  canvas: HTMLCanvasElement
   sizes: Sizes
   camera: THREE.PerspectiveCamera
   renderer: THREE.WebGLRenderer
