@@ -34,6 +34,7 @@ export class UltrasoneSensor extends ElectronicsObject {
 
   correctlyConnected = false
 
+  lastMeasurement: number = null
   measurement: number = null
 
   constructor(options?: UltrasoneOptions) {
@@ -195,10 +196,7 @@ export class UltrasoneSensor extends ElectronicsObject {
     )
     const intersects = this.raycaster.intersectObjects(otherObjects)
 
-    if (intersects.length > 0) {
-      this.measurement = Math.round(intersects[0].distance * 100)
-    } else this.measurement = this.range.max * 100
-
-    console.log("De ultrasone meet: ", this.measurement, "centimeter")
+    this.lastMeasurement = this.measurement
+    this.measurement = intersects.length > 0 ? Math.round(intersects[0].distance * 100) : this.range.max * 100
   }
 }

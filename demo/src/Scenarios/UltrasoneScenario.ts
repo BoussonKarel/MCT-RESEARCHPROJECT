@@ -40,7 +40,7 @@ export class UltrasoneScenario extends Scenario {
         if (this.objects.ultrasone.correctlyConnected) this.startStep2()
         break;
       case 2:
-        this.setFeedback(`De ultrasone meet: ${this.objects.ultrasone.measurement} cm`)
+        if (this.objects.ultrasone.lastMeasurement != this.objects.ultrasone.measurement) this.setFeedback(`De ultrasone meet: ${this.objects.ultrasone.measurement} cm`)
         break;
       default:
         break;
@@ -56,7 +56,7 @@ export class UltrasoneScenario extends Scenario {
   startStep2() {
     this.currentStep = 2
 
-    this.setInstruction("Goed gedaan! Nu kan je met de ultrasone sensor de afstand tot objecten meten.", "")
+    this.setInstruction("Goed gedaan! Nu kan je met de ultrasone sensor de afstand tot objecten meten.", "https://i.imgur.com/4IxqbxX.png")
 
     const cubePosition = new THREE.Vector3().copy(this.objects.ultrasone.mesh.position)
     cubePosition.y += 0.01
