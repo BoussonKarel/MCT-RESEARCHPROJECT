@@ -3,6 +3,7 @@ import * as CANNON from "cannon-es"
 
 import { Physics } from "../Physics"
 import { World } from "../World"
+import { EventEmitter } from "events"
 
 export class BaseObject {
   world: World
@@ -15,7 +16,7 @@ export class BaseObject {
   physicsBody?: CANNON.Body
   scale?: number = 1
 
-  constructor() {
+  constructor() {    
     this.world = new World()
     this.physics = new Physics()
   }
@@ -56,6 +57,12 @@ export class BaseObject {
 
   setQuaternion(newQuaternion: THREE.Quaternion) {
     this.setRotation(new THREE.Euler().setFromQuaternion(newQuaternion))
+  }
+
+  lookAt(position: THREE.Vector3) {
+    this.mesh.lookAt(position)
+    // @ts-ignore
+    if (this.physicsBody) this.physicsBody.quaternion.copy(this.mesh.quaternion)
   }
 
   // Create a simple box, using the bounding box of the object

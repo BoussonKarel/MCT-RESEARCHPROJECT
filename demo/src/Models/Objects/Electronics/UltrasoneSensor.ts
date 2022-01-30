@@ -19,9 +19,9 @@ interface UltrasoneOptions {
 }
 
 const defaultOptions: UltrasoneOptions = {
-  position: new THREE.Vector3(0.1, .75, 0),
+  position: new THREE.Vector3(0.1, 0.75, 0),
   range: { min: 0.02, max: 4 },
-  rotation: new THREE.Euler(-Math.PI/2, 0, 0),
+  rotation: new THREE.Euler(-Math.PI / 2, 0, 0),
 }
 
 const defaultDirection = new THREE.Vector3(0, 0, 1) // Along z-axis
@@ -33,6 +33,7 @@ export class UltrasoneSensor extends ElectronicsObject {
   range: Range
 
   correctlyConnected = false
+
   measurement: number = null
 
   constructor(options?: UltrasoneOptions) {
@@ -74,9 +75,22 @@ export class UltrasoneSensor extends ElectronicsObject {
   }
 
   checkIfConnectedCorrectly() {
-    // Get Arduino
-    const arduinos = this.electronicsWorld.components.filter(c => c instanceof Arduino)
+    this.correctlyConnected = false
+    this.errorState = null
 
+    // Check if all pins have connections
+    for (const pin of Object.values(this.pins)) {
+      const hasConnection = this.electronicsWorld.connections.some(
+        (c) => c.a === pin || c.b === pin
+      )
+
+      if (!hasConnection) return
+    }
+
+    // Get Arduino
+    const arduinos = this.electronicsWorld.components.filter(
+      (c) => c instanceof Arduino
+    )
     // There are no arduino's
     if (arduinos.length < 1) return false
     const arduino = arduinos[0]
@@ -93,11 +107,15 @@ export class UltrasoneSensor extends ElectronicsObject {
     // Check if an Arduino GND is connected to Ultrasone GND
     const pathGND = this.getPathByString(this.pins["GND"], arduino, "GND")
 
-    console.log({pathVcc}, {pathTrig}, {pathEcho}, {pathGND})
-    this.correctlyConnected = false
-    if (pathVcc.length > 0 && pathTrig.length > 0 && pathEcho.length > 0 && pathGND.length > 0) {
-      console.log("Connected succesfully!")
+    if (
+      pathVcc.length > 0 &&
+      pathTrig.length > 0 &&
+      pathEcho.length > 0 &&
+      pathGND.length > 0
+    ) {
       this.correctlyConnected = true
+    } else {
+      this.errorState = "Niet alle pinnen zijn correct verbonden."
     }
   }
 
@@ -169,17 +187,18 @@ export class UltrasoneSensor extends ElectronicsObject {
 
     // Cast ray
     const otherObjects = this.world.scene.children.filter(
-      (obj) => obj != this.mesh && obj != this.arrowHelper
-      // @ts-ignore
-      && !this.electronicsWorld.connections.some(conn => conn.line === obj)
+      (obj) =>
+        obj != this.mesh &&
+        obj != this.arrowHelper &&
+        // @ts-ignore
+        !this.electronicsWorld.connections.some((conn) => conn.line === obj)
     )
     const intersects = this.raycaster.intersectObjects(otherObjects)
 
     if (intersects.length > 0) {
       this.measurement = Math.round(intersects[0].distance * 100)
-    } else this.measurement = this.range.max*100
+    } else this.measurement = this.range.max * 100
 
-    
     console.log("De ultrasone meet: ", this.measurement, "centimeter")
   }
 }
