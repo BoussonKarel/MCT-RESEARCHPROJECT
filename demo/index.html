@@ -7,62 +7,90 @@
     <title>Vite App</title>
   </head>
   <body>
-      <div id="js-controls" class="c-overlay">
-        <div class="c-box">
-          <button id="js-controls-close" class="c-box__close">
-            <svg class="c-box__close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-          <div class="c-controls">
-            <div class="c-control">
-              <img src="/img/right-click.png" class="c-control__img" />
-              <div class="c-control__text">
-                Gebruik rechtermuisknop om rond te kijken.
-              </div>
+    <div id="js-instruction" class="c-instruction u-hidden">
+      <span id="js-instruction-text" class="c-instruction__text">Hier komt de instructie:</span>
+      <svg class="c-instruction__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>
+      <img id="js-instruction-img" 
+              class="c-instruction__img"
+              src=""
+              alt="Afbeelding bij de instructie"
+            />
+    </div>
+
+    <div id="js-start" class="c-overlay">
+      <button id="js-start-button" class="c-button-start">Start de tutorial</button>
+    </div>
+
+    <div id="js-controls" class="c-overlay">
+      <div class="c-box">
+        <button id="js-controls-close" class="c-box__close">
+          <svg
+            class="c-box__close"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="c-controls">
+          <div class="c-control">
+            <img src="/img/right-click.png" class="c-control__img" />
+            <div class="c-control__text">
+              Gebruik rechtermuisknop om rond te kijken.
             </div>
-            <div class="c-control">
-              <img src="/img/left-click.png" class="c-control__img" />
-              <div class="c-control__text">
-                Gebruik linkermuisknop voor interactie met objecten (zoals
-                verplaatsen).
-              </div>
+          </div>
+          <div class="c-control">
+            <img src="/img/left-click.png" class="c-control__img" />
+            <div class="c-control__text">
+              Gebruik linkermuisknop voor interactie met objecten (zoals
+              verplaatsen).
             </div>
-            <div class="c-control">
-              <img src="/img/left-click.png" class="c-control__img" />
-              <div class="c-control__key">SHIFT</div>
-              <div class="c-control__text">
-                Houdt shift ingedrukt wanneer je een object omhoog/omlaag wil
-                verplaatsen.
-              </div>
+          </div>
+          <div class="c-control">
+            <img src="/img/left-click.png" class="c-control__img" />
+            <div class="c-control__key">SHIFT</div>
+            <div class="c-control__text">
+              Houdt shift ingedrukt wanneer je een object omhoog/omlaag wil
+              verplaatsen.
             </div>
-  
-            <div class="c-control">
-              <div class="c-control__key c-control__key--main">R</div>
-              <div class="c-control__text">
-                Draai een object door op R te drukken.
-              </div>
+          </div>
+
+          <div class="c-control">
+            <div class="c-control__key c-control__key--main">R</div>
+            <div class="c-control__text">
+              Draai een object door op R te drukken.
             </div>
-  
-            <div class="c-attributions">
-              <a href="https://www.flaticon.com/free-icons/left-click" title="left click icon">Left click icon created by Smashicons - Flaticon</a>
-              <a href="https://www.flaticon.com/free-icons/right-click" title="right click icon" >Right click icon created by Smashicons - Flaticon</a>
-              <a href="https://www.flaticon.com/free-icons/scroll" title="scroll icon">Scroll icon created by Smashicons - Flaticon</a>
-            </div>
+          </div>
+
+          <div class="c-attributions">
+            <a
+              href="https://www.flaticon.com/free-icons/left-click"
+              title="left click icon"
+              >Left click icon created by Smashicons - Flaticon</a
+            >
+            <a
+              href="https://www.flaticon.com/free-icons/right-click"
+              title="right click icon"
+              >Right click icon created by Smashicons - Flaticon</a
+            >
+            <a
+              href="https://www.flaticon.com/free-icons/scroll"
+              title="scroll icon"
+              >Scroll icon created by Smashicons - Flaticon</a
+            >
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="c-sidebar">
-        <div class="c-instructions">
-          Hallo dit is een instructie
-        </div>
-        <img src="https://hackster.imgix.net/uploads/attachments/991561/uploads2ftmp2ff6c8de93-288c-4663-9a29-31c8e61172812fultrasonic5_WCDWvutJmv.png" alt="Schakeling van Arduino en HC-SR04 ultrasone sensor">
-      </div>
-
-      <div class="tooltip">Tooltip for pins</div>
-      <canvas class="webgl"></canvas>
+    <div class="tooltip">Tooltip for pins</div>
+    <canvas class="webgl"></canvas>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

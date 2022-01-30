@@ -1,14 +1,12 @@
-* {
-    margin: 0;
-    padding: 0;
-}
-
 html,
 body {
     overflow: hidden;
 
     font-family: "Helvetica Neue", Arial, sans-serif;
     font-size: 16px;
+
+    margin: 0;
+    padding: 0;
 }
 
 img {
@@ -17,24 +15,6 @@ img {
 
 .u-hidden {
     display: none !important;
-}
-
-.c-sidebar {
-    position: fixed;
-    z-index: 2;
-
-    top: 1em;
-    bottom: 1em;
-    left: 0;
-
-    width: 100%;
-    max-width: 20em;
-
-    border-left-radius: 1em;
-
-    background-color: white;
-
-    padding: 3em;
 }
 
 .webgl {
@@ -67,10 +47,82 @@ img {
     opacity: 0.5;
 }
 
+.c-instruction {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    background-color: white;
+
+    width: fit-content;
+    padding: 1em;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+
+    cursor: help;
+}
+
+.c-instruction__text {
+
+}
+
+.c-instruction__icon {
+}
+
+.c-instruction__img {
+    position: absolute;
+    margin-top: 1em;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+
+    border-radius: 1em;
+}
+
+.c-instruction:hover .c-instruction__img {
+    display: block;
+}
+
+.c-button-start {
+    position: fixed;
+    z-index: 1;
+
+    top: 50%;
+    left: 0;
+    right: 0;
+
+    transform: translateY(-50%);
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding: 2em;
+    border: none;   
+    border-radius: 1em;
+
+    cursor: pointer;
+}
+
+.c-button-start:hover,
+.c-button-start:focus {
+    color: #555555;
+}
+
 .c-overlay {
     background-color: rgba(0,0,0, .5);
     position: fixed;
-    z-index: 5;
+    z-index: 2;
 
     left: 0;
     top: 0;
@@ -85,13 +137,11 @@ img {
 .c-box {
     background-color: white;
     padding: 2em;
-    z-index: 5;
 
     border-radius: 0.5em;
 
     display: flex;
     flex-direction: row-reverse;
-    align-items: center;
 }
 
 .c-box__close {
@@ -125,18 +175,6 @@ img {
     gap: 1em;
 }
 
-.c-attributions {
-    margin-top: 1em;
-    font-size: 0.8em;
-    display: flex;
-    /* flex-direction: column; */
-    gap: 1em;
-}
-
-.c-attributions a {
-    color: inherit;
-}
-
 .c-control__img {
     width: 48px;
 }
@@ -154,4 +192,16 @@ img {
 
 .c-control__key--main {
     margin-left: 0.75em;
+}
+
+.c-attributions {
+    margin-top: 1em;
+    font-size: 0.8em;
+    display: flex;
+    /* flex-direction: column; */
+    gap: 1em;
+}
+
+.c-attributions a {
+    color: inherit;
 }
