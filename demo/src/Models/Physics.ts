@@ -36,10 +36,11 @@ export class Physics {
     this.contactMaterials.push(new CANNON.ContactMaterial(
       this.materials.default,
       this.materials.default,
-      { friction: 10.0, restitution: 0.0, contactEquationRelaxation: 10.0, frictionEquationStiffness: 1 }
+      { friction: 1.0, restitution: 0.0 }
     ))
 
     this.physicsWorld.addContactMaterial(this.contactMaterials[0])
+    this.physicsWorld.defaultMaterial = this.materials.default
     this.physicsWorld.defaultContactMaterial = this.contactMaterials[0]
 
     this.objects = []

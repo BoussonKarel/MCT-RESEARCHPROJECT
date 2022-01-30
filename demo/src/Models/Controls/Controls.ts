@@ -11,7 +11,7 @@ const pvNormal = new THREE.Vector3(0, 0, 1) // Vertical
 const cameraPositions = [
   new THREE.Vector3(0, 1.25, 0.5),
   new THREE.Vector3(0, .85, 0.3),
-  new THREE.Vector3(0, 1.25, 0.1)
+  new THREE.Vector3(0, 1.5, 0.15)
 ]
 
 export class Controls {
