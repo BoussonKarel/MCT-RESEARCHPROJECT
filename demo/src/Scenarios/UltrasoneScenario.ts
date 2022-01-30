@@ -40,7 +40,8 @@ export class UltrasoneScenario extends Scenario {
         if (this.objects.ultrasone.correctlyConnected) this.startStep2()
         break;
       case 2:
-        if (this.objects.ultrasone.lastMeasurement != this.objects.ultrasone.measurement) this.setFeedback(`De ultrasone meet: ${this.objects.ultrasone.measurement} cm`)
+        if (!this.objects.ultrasone.correctlyConnected) this.setFeedbackError("Sluit de Ultrasone sensor terug aan.")
+        else if (this.objects.ultrasone.lastMeasurement != this.objects.ultrasone.measurement) this.setFeedback(`De ultrasone meet: ${this.objects.ultrasone.measurement} cm`)
         break;
       default:
         break;
@@ -60,11 +61,12 @@ export class UltrasoneScenario extends Scenario {
 
     const cubePosition = new THREE.Vector3().copy(this.objects.ultrasone.mesh.position)
     cubePosition.y += 0.01
-    cubePosition.z += -0.1
+    cubePosition.x += 0.1
     this.objects.cube = new SimpleCube({position: cubePosition})
-    
-    this.objects.ultrasone.lookAt(cubePosition)
-    this.objects.ultrasone.mesh.position.y += 0.01
-    this.objects.ultrasone.setPosition(this.objects.ultrasone.mesh.position)
+
+    const currentRotation = this.objects.ultrasone.mesh.rotation
+    currentRotation.z += Math.PI/2
+    currentRotation.y += Math.PI/2
+    this.objects.ultrasone.setRotation(currentRotation)
   }
 }
