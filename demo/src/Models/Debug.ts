@@ -15,7 +15,7 @@ export class Debug {
       if (instance) return instance
       instance = this
   
-      this.ui = new GUI()
+      this.ui = new GUI({title: "Debug"}).close()
     }
   }
 }
