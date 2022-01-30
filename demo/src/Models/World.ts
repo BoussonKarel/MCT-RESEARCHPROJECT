@@ -27,6 +27,7 @@ export class World {
   pinMeshes: THREE.Object3D[] = []
 
   constructor() {
+
     if (world) return world
     world = this
 
@@ -73,14 +74,12 @@ export class World {
       0.1,
       100
     )
-    this.camera.position.set(0, 1.5, 0.5)
+
     this.scene.add(this.camera)
 
-    // Camera location
-    this.camera.lookAt(new THREE.Vector3(0, .73, 0))
-
     // Controls
-    this.controls = new Controls(this.camera)
+    const lookAt = new THREE.Vector3(0, .75, 0)
+    this.controls = new Controls(this.camera, lookAt)
 
     // Resources
     this.resources = new Resources(sources)

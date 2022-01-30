@@ -21,6 +21,12 @@ img {
     position: fixed;
     top: 0;
     left: 0;
+    bottom: 0;
+    right: 0;
+
+    width: 100vw;
+    height: 100vh;
+
     outline: none;
 }
 
@@ -76,6 +82,38 @@ img {
 }
 
 .c-help__icon {
+    color: white;
+}
+
+.c-camera {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 2;
+
+    background-color: black;
+    opacity: .7;
+    border-top-left-radius: .5em;
+    outline: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+
+    width: 3em;
+    height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.c-camera:hover,
+.c-camera:focus {
+    opacity: .8;
+}
+
+.c-camera__icon {
     color: white;
 }
 

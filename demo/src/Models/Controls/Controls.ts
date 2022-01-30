@@ -8,6 +8,12 @@ import { World } from "../World"
 const phNormal = new THREE.Vector3(0, 1, 0) // Horizontal
 const pvNormal = new THREE.Vector3(0, 0, 1) // Vertical
 
+const cameraPositions = [
+  new THREE.Vector3(0, 1.5, 0.5),
+  new THREE.Vector3(0, .95, 0.5),
+  new THREE.Vector3(0, 1.5, 0)
+]
+
 export class Controls {
   world: World
   camera: THREE.PerspectiveCamera
@@ -15,7 +21,13 @@ export class Controls {
 
   htmlControls: HTMLDivElement
   htmlControlsClose: HTMLButtonElement
+
   htmlHelpButton: HTMLButtonElement
+
+  htmlCameraButton: HTMLButtonElement
+
+  cameraPositionIndex: number = 0
+  cameraLookAt: THREE.Vector3
 
   electronicsWorld: ElectronicsWorld
 
@@ -42,21 +54,34 @@ export class Controls {
   // Check if it's connectable with something
   connectableWith: THREE.Object3D<THREE.Event>
 
-  constructor(camera: THREE.PerspectiveCamera) {
+  constructor(camera: THREE.PerspectiveCamera, cameraLookAt: THREE.Vector3) {
     this.world = new World()
 
     // Instructions
     this.htmlControls = document.querySelector("#js-controls")
     this.htmlControlsClose = document.querySelector("#js-controls-close")
     this.htmlHelpButton = document.querySelector("#js-help")
+    this.htmlCameraButton = document.querySelector("#js-camera")
 
     this.htmlControlsClose.addEventListener("click", () => this.hideInstructions())
     this.showInstructions()
 
     this.htmlHelpButton.addEventListener("click", () => this.showInstructions())
 
+    this.htmlCameraButton.addEventListener("click", () => {
+      this.cameraPositionIndex++
+      if (this.cameraPositionIndex >= cameraPositions.length) this.cameraPositionIndex = 0
+      
+      this.camera.position.copy(cameraPositions[this.cameraPositionIndex])
+      this.camera.lookAt(this.cameraLookAt)
+    })
+
     this.camera = camera
     this.camera.rotation.reorder("YXZ")
+    this.camera.position.copy(cameraPositions[0])
+    this.cameraLookAt = cameraLookAt
+    this.camera.lookAt(this.cameraLookAt)
+
 
     this.sizes = new Sizes()
 
