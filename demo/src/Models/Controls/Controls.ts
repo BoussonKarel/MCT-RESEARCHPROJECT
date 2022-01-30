@@ -244,14 +244,25 @@ export class Controls {
   pickPin() {
     if (!this.hoveringPinMesh) return
 
-    const contains = this.selectedPinMeshes.findIndex(n => n === this.hoveringPinMesh)
+    // If this pin is in a connection > remove connection
+    // const hasConnection = this.hoveringPinMesh
+    const hoveringPin = this.hoveringPinMesh.userData.pin
 
-    if (contains > -1) this.selectedPinMeshes.splice(contains, 1)
+    if (this.electronicsWorld.getConnectionsOnPin(hoveringPin).length > 0) {
+      this.electronicsWorld.removeConnectionsOnPin(hoveringPin)
+      // return
+    }
+
+    // If this pin is already selected > deselect
+    const selected = this.selectedPinMeshes.findIndex(n => n === this.hoveringPinMesh)
+    if (selected > -1) this.selectedPinMeshes.splice(selected, 1)
+    // Else > select
     else {
       this.selectedPinMeshes.push(this.hoveringPinMesh)
       this.hoveringPinMesh.visible = true
     }
 
+    // If there are 2 pins selected > create connection
     if (this.selectedPinMeshes.length > 1) {
       this.connectPins(this.selectedPinMeshes)
       this.selectedPinMeshes = []

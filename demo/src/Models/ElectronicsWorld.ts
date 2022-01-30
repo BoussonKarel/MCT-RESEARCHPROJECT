@@ -59,13 +59,23 @@ export class ElectronicsWorld extends EventEmitter {
     this.emit("connectionChange")
   }
 
+  getConnectionsOnPin(pin: Pin) {
+    return this.connections.filter(p => p.a === pin || p.b === pin)
+  }
+
   removeConnection(pin1: Pin, pin2: Pin) {
     this.connections = this.connections.filter(p => (p.a != pin1 && p.b != pin2) && (p.a != pin2 && p.b != pin1))
     this.emit("connectionChange")
   }
 
   removeConnectionsOnPin(pin: Pin) {
-    this.connections = this.connections.filter(p => p.a != pin && p.b != pin)
+    const pinConnections = this.getConnectionsOnPin(pin)
+
+    for(const conn of pinConnections) {
+      if (conn.line) this.world.scene.remove(conn.line)
+      this.connections = this.connections.filter(p => p != conn)
+    }
+
     this.emit("connectionChange")
   }
 
@@ -103,7 +113,6 @@ export class ElectronicsWorld extends EventEmitter {
     for (const conn of this.connections) {
       if (!conn.line) {
         const randomHex = Math.floor(Math.random() * 0xffffff)
-        console.log(randomHex)
         const geometry = new THREE.BufferGeometry()
         const material = new THREE.LineBasicMaterial( { color: randomHex } );
 
