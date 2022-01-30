@@ -47,6 +47,38 @@ img {
     opacity: 0.5;
 }
 
+.c-help {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 2;
+
+    background-color: black;
+    opacity: .7;
+    border-bottom-left-radius: .5em;
+    outline: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+
+    width: 3em;
+    height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.c-help:hover,
+.c-help:focus {
+    opacity: .8;
+}
+
+.c-help__icon {
+    color: white;
+}
+
 .c-instruction {
     position: fixed;
     z-index: 1;

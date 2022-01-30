@@ -31,8 +31,8 @@ export class Scenario {
     this.htmlInstructionImg = document.querySelector('#js-instruction-img')
     this.showInstruction()
 
-    if (world.resources) this.addObjects()
-    else this.world.resources.on("loaded", () => this.addObjects())
+    if (world.resources) this.addStartObjects()
+    else this.world.resources.on("loaded", () => this.addStartObjects())
   }
 
   showInstruction() {
@@ -52,5 +52,7 @@ export class Scenario {
     this.htmlInstructionImg.src = imgSrc
   }
 
-  addObjects() {}
+  addStartObjects() {
+    // No start objects in base scenario
+  }
 }

@@ -15,6 +15,7 @@ export class Controls {
 
   htmlControls: HTMLDivElement
   htmlControlsClose: HTMLButtonElement
+  htmlHelpButton: HTMLButtonElement
 
   electronicsWorld: ElectronicsWorld
 
@@ -47,9 +48,12 @@ export class Controls {
     // Instructions
     this.htmlControls = document.querySelector("#js-controls")
     this.htmlControlsClose = document.querySelector("#js-controls-close")
+    this.htmlHelpButton = document.querySelector("#js-help")
 
     this.htmlControlsClose.addEventListener("click", () => this.hideInstructions())
     this.showInstructions()
+
+    this.htmlHelpButton.addEventListener("click", () => this.showInstructions())
 
     this.camera = camera
     this.camera.rotation.reorder("YXZ")
