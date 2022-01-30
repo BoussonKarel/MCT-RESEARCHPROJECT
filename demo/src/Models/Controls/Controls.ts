@@ -9,9 +9,9 @@ const phNormal = new THREE.Vector3(0, 1, 0) // Horizontal
 const pvNormal = new THREE.Vector3(0, 0, 1) // Vertical
 
 const cameraPositions = [
-  new THREE.Vector3(0, 1.5, 0.5),
-  new THREE.Vector3(0, .95, 0.5),
-  new THREE.Vector3(0, 1.5, 0)
+  new THREE.Vector3(0, 1.25, 0.5),
+  new THREE.Vector3(0, .85, 0.3),
+  new THREE.Vector3(0, 1.25, 0.1)
 ]
 
 export class Controls {
@@ -71,7 +71,7 @@ export class Controls {
     this.htmlCameraButton.addEventListener("click", () => {
       this.cameraPositionIndex++
       if (this.cameraPositionIndex >= cameraPositions.length) this.cameraPositionIndex = 0
-      
+
       this.camera.position.copy(cameraPositions[this.cameraPositionIndex])
       this.camera.lookAt(this.cameraLookAt)
     })
