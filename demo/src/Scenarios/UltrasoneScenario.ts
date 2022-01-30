@@ -56,7 +56,7 @@ export class UltrasoneScenario extends Scenario {
   startStep2() {
     this.currentStep = 2
 
-    this.setInstruction("Goed gedaan! Nu kan je met de ultrasone sensor de afstand tot objecten meten.", "https://i.imgur.com/4IxqbxX.png")
+    this.setInstruction("Goed gedaan! Nu kan je met de ultrasone sensor de afstand tot objecten meten.", "https://i.imgur.com/u4EXkht.png")
 
     const cubePosition = new THREE.Vector3().copy(this.objects.ultrasone.mesh.position)
     cubePosition.y += 0.01
