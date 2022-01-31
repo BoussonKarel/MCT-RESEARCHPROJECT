@@ -1,4 +1,6 @@
 import * as THREE from "three"
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+
 import sources from "../sources"
 
 import { Resources } from "./Resources"
@@ -9,6 +11,7 @@ import { Debug } from "./Debug"
 
 import { Floor } from "./Objects/Environment/Floor"
 import { Desk } from "./Objects/Environment/Desk"
+import { VRControls } from "./Controls/VRControls";
 
 let world: World = null
 
@@ -20,7 +23,7 @@ export class World {
   renderer: THREE.WebGLRenderer
   time: Time
   scene: THREE.Scene
-  controls: Controls
+  controls: Controls | VRControls
   resources: Resources
 
   grabbables: THREE.Object3D[] = []
@@ -47,9 +50,6 @@ export class World {
       this.renderer.setPixelRatio(this.sizes.pixelRatio)
     })
 
-    // Time
-    this.time = new Time()
-
     // Scene
     this.scene = new THREE.Scene()
 
@@ -62,6 +62,9 @@ export class World {
 
     this.renderer.setSize(this.sizes.width, this.sizes.height)
     this.renderer.setPixelRatio(this.sizes.pixelRatio)
+
+    // Time
+    this.time = new Time(this.renderer)
 
     this.time.on('tick', () => {
       this.renderer.render(this.scene, this.camera)
@@ -78,8 +81,7 @@ export class World {
     this.scene.add(this.camera)
 
     // Controls
-    const lookAt = new THREE.Vector3(0, .75, 0)
-    this.controls = new Controls(this.camera, lookAt)
+    this.controls = new Controls(this.camera)
 
     // Resources
     this.resources = new Resources(sources)
@@ -89,6 +91,13 @@ export class World {
     this.addLights()
 
     this.setDebugOptions()
+
+    // VR
+    this.controls = new VRControls(this.camera)
+
+    document.body.appendChild( VRButton.createButton( this.renderer ) );
+
+    this.renderer.xr.enabled = true;
   }
 
   setDebugOptions() {

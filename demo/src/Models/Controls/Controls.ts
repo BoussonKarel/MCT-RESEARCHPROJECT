@@ -8,10 +8,12 @@ import { World } from "../World"
 const phNormal = new THREE.Vector3(0, 1, 0) // Horizontal
 const pvNormal = new THREE.Vector3(0, 0, 1) // Vertical
 
+const lookAt = new THREE.Vector3(0, .75, -0.25)
+
 const cameraPositions = [
-  new THREE.Vector3(0, 1.25, 0.5),
-  new THREE.Vector3(0, .85, 0.3),
-  new THREE.Vector3(0, 1.5, 0.15)
+  new THREE.Vector3(0, 1.25, 0.25),
+  new THREE.Vector3(0, .85, 0.05),
+  new THREE.Vector3(0, 1.5, -0.10)
 ]
 
 export class Controls {
@@ -54,7 +56,7 @@ export class Controls {
   // Check if it's connectable with something
   connectableWith: THREE.Object3D<THREE.Event>
 
-  constructor(camera: THREE.PerspectiveCamera, cameraLookAt: THREE.Vector3) {
+  constructor(camera: THREE.PerspectiveCamera) {
     this.world = new World()
 
     // Instructions
@@ -62,6 +64,8 @@ export class Controls {
     this.htmlControlsClose = document.querySelector("#js-controls-close")
     this.htmlHelpButton = document.querySelector("#js-help")
     this.htmlCameraButton = document.querySelector("#js-camera")
+
+    this.htmlControls.classList.remove("u-hidden")
 
     this.htmlControlsClose.addEventListener("click", () => this.hideInstructions())
     this.showInstructions()
@@ -79,7 +83,7 @@ export class Controls {
     this.camera = camera
     this.camera.rotation.reorder("YXZ")
     this.camera.position.copy(cameraPositions[0])
-    this.cameraLookAt = cameraLookAt
+    this.cameraLookAt = lookAt
     this.camera.lookAt(this.cameraLookAt)
 
 

@@ -25,7 +25,7 @@ export class Desk {
     this.mesh.geometry.center()
 
     this.mesh.scale.set(1 / 100, 1 / 100, 1 / 100) // From 73m to 73cm
-    this.mesh.position.set(0, 0 + this.deskHeight/2, 0)
+    this.mesh.position.set(0, 0 + this.deskHeight/2, -.25)
 
     this.world.scene.add(this.mesh)
 
