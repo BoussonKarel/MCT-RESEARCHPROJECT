@@ -17,7 +17,7 @@
 + Pins toevoegen aan een sensor, nesten met Object3D.add() [17]
 - Toevoegen van een kabel tussen de twee, hiervoor moet je de lokale coördinaten van een pin binnen zijn parent omzetten naar wereldcoördinaten (localToWorld) [18]
 
-+ Add VR to project [19]
++ Add VR to project [19] [20] [21] [22] [23] [24] [25]
 
 ## Bronnen
 - [1]‘Three.js – JavaScript 3D Library’. https://threejs.org/ (geraadpleegd 10 januari 2022).
@@ -38,3 +38,10 @@
 + [16]‘javascript - ThreeJS - How do I measure light intensity / pixel values at a given point in x/y/z?’, Stack Overflow. https://stackoverflow.com/questions/46346248/threejs-how-do-i-measure-light-intensity-pixel-values-at-a-given-point-in-x (geraadpleegd 25 januari 2022).
 - [17]‘Object3D#add – three.js docs’. https://threejs.org/docs/#api/en/core/Object3D.add (geraadpleegd 26 januari 2022).
 + [18]‘Object3D#localToWorld – three.js docs’. https://threejs.org/docs/#api/en/core/Object3D.localToWorld (geraadpleegd 27 januari 2022).
+- [19]‘How to create VR content – three.js docs’. https://threejs.org/docs/#manual/en/introduction/How-to-create-VR-content (geraadpleegd 31 januari 2022).
++ [20]mrdoob, three.js/examples/webxr_vr_dragging.html. 2022. Geraadpleegd: 31 januari 2022. [Online]. Beschikbaar op: https://github.com/mrdoob/three.js/blob/efbfc67edc7f65cfcc61a389ffc5fd43ea702bc6/examples/webxr_vr_dragging.html
+- [21]‘WebGLRenderer#setAnimationLoop – three.js docs’. https://threejs.org/docs/?q=webglr#api/en/renderers/WebGLRenderer.setAnimationLoop (geraadpleegd 31 januari 2022).
++ [22]‘WebXRManager#getCamera – three.js docs’. https://threejs.org/docs/?q=renderer#api/en/renderers/webxr/WebXRManager.getCamera (geraadpleegd 31 januari 2022).
+- [23]‘ArrayCamera – three.js docs’. https://threejs.org/docs/?q=renderer#api/en/cameras/ArrayCamera (geraadpleegd 31 januari 2022).
++ [24]mrdoob, three.js/src/renderers/webxr/WebXRManager.js. 2022. Geraadpleegd: 31 januari 2022. [Online]. Beschikbaar op: https://github.com/mrdoob/three.js/blob/efbfc67edc7f65cfcc61a389ffc5fd43ea702bc6/src/renderers/webxr/WebXRManager.js
+- [25]‘XRSession - Web APIs | MDN’. https://developer.mozilla.org/en-US/docs/Web/API/XRSession/selectstart_event (geraadpleegd 31 januari 2022).
