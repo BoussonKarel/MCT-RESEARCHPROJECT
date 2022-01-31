@@ -1,6 +1,6 @@
 # Research kort uitgelegd
-- Waar ThreeJS leren [1]
-+ Goeie course gevonden [2]
+- Wat is Three.js, waar kan ik het leren... [1]
++ Via Three.js site en een Youtuber een goede cursus gevonden van Bruno Simon [2]
 - Controls gemaakt om rond te kijken gebaseerd op PointerLockControls [3] [4]
 + Wat is Pointerlock precies, eigen variant gemaakt [5]
 - Basis raycaster om objecten te verplaatsen [6]
@@ -16,6 +16,8 @@
 - Licht intensiteit meten is niet direct mogelijk, wel de intensiteit op een bepaalde pixel, maar dit is redelijk lastig en niet echt wat we zoeken, want de pixel (LDR) is niet altijd zichtaar. [16]
 + Pins toevoegen aan een sensor, nesten met Object3D.add() [17]
 - Toevoegen van een kabel tussen de twee, hiervoor moet je de lokale coördinaten van een pin binnen zijn parent omzetten naar wereldcoördinaten (localToWorld) [18]
+
++ Add VR to project [19]
 
 ## Bronnen
 - [1]‘Three.js – JavaScript 3D Library’. https://threejs.org/ (geraadpleegd 10 januari 2022).
