@@ -26,7 +26,7 @@ export class World {
   controls: Controls | VRControls
   resources: Resources
 
-  grabbables: THREE.Object3D[] = []
+  grabbables: THREE.Group = new THREE.Group()
   pinMeshes: THREE.Object3D[] = []
 
   constructor() {
@@ -52,6 +52,7 @@ export class World {
 
     // Scene
     this.scene = new THREE.Scene()
+    this.scene.add(this.grabbables)
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -81,7 +82,7 @@ export class World {
     this.scene.add(this.camera)
 
     // Controls
-    this.controls = new Controls(this.camera)
+    // this.controls = new Controls(this.camera)
 
     // Resources
     this.resources = new Resources(sources)

@@ -68,17 +68,11 @@ export class VRControls {
   //#region Events
   // Controllers
   setControllerEvents() {
-
 		this.controller1.addEventListener( 'selectstart', (e) => this.onSelectStart(e) );
 		this.controller1.addEventListener( 'selectend', (e) => this.onSelectEnd(e) );
     
 		this.controller2.addEventListener( 'selectstart', (e) => this.onSelectStart(e) );
 		this.controller2.addEventListener( 'selectend', (e) => this.onSelectEnd(e) );
-
-    // this.world.canvas.addEventListener("mousemove", (e) => this.onMouseMove(e))
-    // this.world.canvas.addEventListener("wheel", (e) => this.onWheel(e))
-    // this.world.canvas.addEventListener("mousedown", (e) => this.onMouseDown(e))
-    // this.world.canvas.addEventListener("mouseup", (e) => this.onMouseUp(e))
   }
 
   onSelectStart(e) {
@@ -89,34 +83,28 @@ export class VRControls {
     const intersections = this.getIntersections(controller)
 
     if (intersections.length > 0) {
-      const object = intersections[0].object
+      // Set selected object
+      this.movingObject = intersections[0].object
 
       // @ts-ignore
-			object.material.emissive.b = 1
-
-      controller.userData.selected = object
-      controller.userData.previousParent = object.parent
+			this.movingObject.material.emissive.b = 1
 
       // Attach to controller
-      controller.attach(object)
-
-      // Set as selected object
-      this.movingObject = object
+      controller.attach(this.movingObject)
     }
   }
 
   onSelectEnd(e) {
-    const controller = e.target
+    if (!this.movingObject) return
 
-    if (controller.userData.selected !== undefined) {
-      const object = controller.userData.selected;
-			object.material.emissive.b = 0;
+    if (this.movingObject) {
+      // @ts-ignore
+			this.movingObject.material.emissive.b = 0
 
       // Attach to world
-			controller.userData.previousParent.attach(object)
+			this.world.grabbables.attach(this.movingObject)
 
       // Unset as selected object
-			controller.userData.selected = undefined;
       this.movingObject = null
     }
   }
@@ -127,7 +115,7 @@ export class VRControls {
     this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld)
     this.raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.tempMatrix)
 
-    return this.raycaster.intersectObjects(this.world.grabbables, false)
+    return this.raycaster.intersectObjects(this.world.grabbables.children, false)
   }
 
   onMouseMove(event: MouseEvent) {

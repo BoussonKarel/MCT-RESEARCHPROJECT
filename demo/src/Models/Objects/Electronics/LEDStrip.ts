@@ -63,7 +63,7 @@ export class LEDStrip extends ElectronicsObject {
     if (options.position) this.mesh.position.copy(options.position)
 
     // Make grabbable
-    this.world.grabbables.push(this.mesh)
+    this.world.grabbables.add(this.mesh)
   }
 
   addLights() {

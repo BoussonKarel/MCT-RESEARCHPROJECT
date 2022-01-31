@@ -184,7 +184,7 @@ export class Controls {
   //#region Moving objects
   pickObject() {
     // Shoot ray and check for intersecting objects
-    const intersects = this.raycaster.intersectObjects(this.world.grabbables)
+    const intersects = this.raycaster.intersectObjects(this.world.grabbables.children)
     if (intersects.length < 1) return
 
     // Set minimum Y height

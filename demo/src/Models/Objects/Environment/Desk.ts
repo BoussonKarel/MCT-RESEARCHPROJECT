@@ -29,9 +29,6 @@ export class Desk {
 
     this.world.scene.add(this.mesh)
 
-    const axesHelper = new AxesHelper(5)
-    this.mesh.add(axesHelper)
-
     // ThreeJS to Physics
     this.mesh.geometry.computeBoundingBox()
     const cannonVec = new CANNON.Vec3(
