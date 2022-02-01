@@ -69,6 +69,7 @@ export class BaseObject {
   // Create a simple box, using the bounding box of the object
   createSimplePhysicsBox(mass = 0.5) {
     this.mesh.geometry.computeBoundingBox()
+    this.mesh.geometry.computeBoundingSphere()
     const box3 = this.mesh.geometry.boundingBox
 
     const dimensions = new THREE.Vector3().subVectors(box3.max, box3.min)
@@ -82,6 +83,10 @@ export class BaseObject {
       mass: mass, // kg
     })
 
-    this.physicsBody.addShape(box)
+    const { center } = this.mesh.geometry.boundingSphere
+    center.multiplyScalar(this.scale)
+
+    // @ts-ignore
+    this.physicsBody.addShape(box, new CANNON.Vec3().copy(center))
   }
 }
