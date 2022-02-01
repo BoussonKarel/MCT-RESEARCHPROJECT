@@ -108,11 +108,11 @@ export class Controls {
   //#region Events
   // Mouse
   setMouseEvents() {
-    this.world.canvas.addEventListener("mousemove", (e) => this.onMouseMove(e))
+    document.addEventListener("mousemove", (e) => this.onMouseMove(e))
     this.world.canvas.addEventListener("wheel", (e) => this.onWheel(e))
     this.world.canvas.addEventListener("mousedown", (e) => this.onMouseDown(e))
-    this.world.canvas.addEventListener("mouseup", (e) => this.onMouseUp(e))
-    this.world.canvas.addEventListener("contextmenu", (e) =>
+    document.addEventListener("mouseup", (e) => this.onMouseUp(e))
+    document.addEventListener("contextmenu", (e) =>
       e.preventDefault() // Disable context menu (on right click)
     )
   }
