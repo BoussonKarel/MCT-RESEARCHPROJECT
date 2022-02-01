@@ -49,14 +49,13 @@ export class Resources extends EventEmitter {
       }
       if (source.type == "gltfModel") {
         this.gltfLoader.load(source.path, (file) => {
-          // file.scene.traverse(function(node) {
-          //   // @ts-ignore
-          //   if (node.isMesh) {
-          //     node.castShadow = true
-          //     node.receiveShadow = true
-          //     node.geometry.computeVertexNormals() // FIX
-          //   }
-          // })
+          file.scene.traverse(function(node) {
+            // @ts-ignore
+            if (node.isMesh) {
+              // @ts-ignore
+              node.geometry.computeVertexNormals() // Fix shadows
+            }
+          })
 
           this.items[source.name] = file
 

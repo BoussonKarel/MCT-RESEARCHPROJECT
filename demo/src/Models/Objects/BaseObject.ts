@@ -30,6 +30,9 @@ export class BaseObject {
     // needs to be done after the child class constructor()
     this.mesh.userData.component = this
 
+    this.mesh.receiveShadow = true
+    this.mesh.castShadow = true
+    
     // Add mesh to scene
     this.world.scene.add(this.mesh)
     

@@ -78,9 +78,9 @@ export class Desk {
     this.mesh.scale.set(this.scale, this.scale, this.scale) // From 73m to 73cm
     this.mesh.position.set(0, 0, 0)
 
-    this.world.scene.add(this.mesh)
+    this.mesh.castShadow = true
+    this.mesh.receiveShadow = true
 
-    const axesHelper = new AxesHelper(5)
-    this.mesh.add(axesHelper)
+    this.world.scene.add(this.mesh)
   }
 }
