@@ -109,7 +109,7 @@ export class Controls {
   // Mouse
   setMouseEvents() {
     document.addEventListener("mousemove", (e) => this.onMouseMove(e))
-    this.world.canvas.addEventListener("wheel", (e) => this.onWheel(e))
+    this.world.canvas.addEventListener("wheel", (e) => this.onWheel(e), {passive: true})
     this.world.canvas.addEventListener("mousedown", (e) => this.onMouseDown(e))
     document.addEventListener("mouseup", (e) => this.onMouseUp(e))
     document.addEventListener("contextmenu", (e) =>
