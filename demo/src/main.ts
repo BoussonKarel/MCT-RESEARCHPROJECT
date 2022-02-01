@@ -3,21 +3,23 @@ import { UltrasoneScenario } from "./Scenarios/UltrasoneScenario"
 import { DebugSpawner } from "./Models/Objects/DebugSpawner"
 import { World } from "./Models/World"
 
-let world
 let startOverlay, startButton
 let scenario1
 
-const init = () => {
-  world = new World()
+const world = new World()
 
+function startScenario() {
+  console.log("Start")
+  scenario1 = new UltrasoneScenario()
+  startOverlay.classList.add("u-hidden")
+}
+
+const init = () => {
   startOverlay = document.querySelector("#js-start")
   startButton = document.querySelector("#js-start-button")
-  startButton.addEventListener("click", () => {
-    scenario1 = new UltrasoneScenario(world)
-    startOverlay.classList.add("u-hidden")
-  })
+  startButton.addEventListener("click", startScenario)
 
   const spawner = new DebugSpawner()
 }
 
-document.addEventListener("DOMContentLoaded", init)
+init()

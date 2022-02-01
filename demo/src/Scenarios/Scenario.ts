@@ -19,13 +19,13 @@ export class Scenario {
 
   currentStep = 1
 
-  constructor(world: World) {
+  constructor() {
     // Only 1 of this scenario can exist
     if (instance) return instance
     instance = this
 
     // Create the world
-    this.world = world
+    this.world = new World()
 
     this.htmlInstruction = document.querySelector('#js-instruction')
     this.htmlInstructionText = document.querySelector('#js-instruction-text')

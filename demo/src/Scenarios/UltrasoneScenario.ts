@@ -2,7 +2,6 @@ import * as THREE from "three"
 import { Arduino } from "../Models/Objects/Electronics/Arduino";
 import { UltrasoneSensor } from "../Models/Objects/Electronics/UltrasoneSensor";
 import { SimpleCube } from "../Models/Objects/SimpleCube";
-import { World } from "../Models/World";
 import { Scenario } from "./Scenario";
 
 let instance = null
@@ -16,14 +15,14 @@ interface UltrasoneScenarioObjects {
 export class UltrasoneScenario extends Scenario {
   objects: UltrasoneScenarioObjects = {}
 
-  constructor(world: World) {
-    super(world)
+  constructor() {
+    super()
 
     if (instance) return instance
     instance = this
 
     // Add start objects
-    if (world.resources) this.addStartObjects()
+    if (this.world.resources.toLoad === this.world.resources.loaded) this.addStartObjects()
     else this.world.resources.on("loaded", () => this.addStartObjects())
 
     // Set first instruction

@@ -3,9 +3,11 @@ import * as CANNON from "cannon-es"
 
 import { Physics } from "../Physics"
 import { World } from "../World"
+import { Resources } from "../Resources"
 
 export class BaseObject {
   world: World
+  resources: Resources
 
   mesh: THREE.Mesh
   geometry?: THREE.BufferGeometry
@@ -72,11 +74,14 @@ export class BaseObject {
     const dimensions = new THREE.Vector3().subVectors(box3.max, box3.min)
     dimensions.multiplyScalar(this.scale)
 
+    const box = new CANNON.Box(
+      new CANNON.Vec3(dimensions.x/2, dimensions.y/2, dimensions.z/2)
+      )
+
     this.physicsBody = new CANNON.Body({
       mass: mass, // kg
-      shape: new CANNON.Box(
-        new CANNON.Vec3(dimensions.x/2, dimensions.y/2, dimensions.z/2)
-        ),
     })
+
+    this.physicsBody.addShape(box)
   }
 }

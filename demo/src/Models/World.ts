@@ -9,9 +9,8 @@ import { Debug } from "./Debug"
 
 import { Floor } from "./Objects/Environment/Floor"
 import { Desk } from "./Objects/Environment/Desk"
-import { Arduino } from "./Objects/Electronics/Arduino"
 
-let world: World = null
+let instance: World = null
 
 export class World {
   debug: Debug
@@ -28,9 +27,8 @@ export class World {
   pinMeshes: THREE.Object3D[] = []
 
   constructor() {
-
-    if (world) return world
-    world = this
+    if (instance) return instance
+    instance = this
 
     // Debug
     this.debug = new Debug()
@@ -97,11 +95,11 @@ export class World {
       const cameraFolder = this.debug.ui.addFolder("Camera")
 
       cameraFolder.add(this.camera, 'fov').min(15).max(100).step(1).name('Camera FOV').onChange(() => {
-        world.camera.updateProjectionMatrix()
+        this.camera.updateProjectionMatrix()
       })
       
       cameraFolder.add(this.camera, 'zoom').min(1).max(5).step(.05).name('Camera Zoom').onChange(() => {
-        world.camera.updateProjectionMatrix()
+        this.camera.updateProjectionMatrix()
       })
     }
   }
@@ -124,19 +122,16 @@ export class World {
     directionalLight.castShadow = true // SHADOWS
     directionalLight.shadow.mapSize.set(1024, 1024) // or width/x or height/y
 
-    // far value is way too big > let's fix this
-    // To avoid bugs/glitches
-    directionalLight.shadow.camera.top = 2
-    directionalLight.shadow.camera.right = 2
-    directionalLight.shadow.camera.bottom = -2
-    directionalLight.shadow.camera.left = -2
+    // // far value is way too big > let's fix this
+    // // To avoid bugs/glitches
+    // directionalLight.shadow.camera.top = 2
+    // directionalLight.shadow.camera.right = 2
+    // directionalLight.shadow.camera.bottom = -2
+    // directionalLight.shadow.camera.left = -2
 
-    directionalLight.shadow.camera.near = 1
-    directionalLight.shadow.camera.far = 6
+    // directionalLight.shadow.camera.near = 1
+    // directionalLight.shadow.camera.far = 6
 
     this.scene.add(directionalLight)
-
-    const ligthHelper = new THREE.DirectionalLightHelper(directionalLight)
-    this.scene.add(ligthHelper)
   }
 }

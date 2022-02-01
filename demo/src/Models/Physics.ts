@@ -72,10 +72,12 @@ export class Physics {
     }
   }
 
-  addToPhysicsWorld(mesh, body) {
+  addToPhysicsWorld(mesh: THREE.Mesh, body: CANNON.Body) {
     this.physicsWorld.addBody(body)
 
+    // @ts-ignore
     body.position.copy(mesh.position)
+    // @ts-ignore
     body.quaternion.copy(mesh.quaternion)
 
     this.objects.push({
