@@ -120,17 +120,17 @@ export class World {
     directionalLight.position.set(0,2,0)
     
     directionalLight.castShadow = true // SHADOWS
-    directionalLight.shadow.mapSize.set(1024, 1024) // or width/x or height/y
+    directionalLight.shadow.mapSize.set(2048, 2048) // or width/x or height/y
+    directionalLight.shadow.radius = .5
 
-    // // far value is way too big > let's fix this
-    // // To avoid bugs/glitches
-    // directionalLight.shadow.camera.top = 2
-    // directionalLight.shadow.camera.right = 2
-    // directionalLight.shadow.camera.bottom = -2
-    // directionalLight.shadow.camera.left = -2
+    // shadow camera optimization (floor is only 5x5)
+    directionalLight.shadow.camera.top = 2.5
+    directionalLight.shadow.camera.right = 2.5
+    directionalLight.shadow.camera.bottom = -2.5
+    directionalLight.shadow.camera.left = -2.5
 
-    // directionalLight.shadow.camera.near = 1
-    // directionalLight.shadow.camera.far = 6
+    directionalLight.shadow.camera.near = .5 // Don't render shadows before .5m
+    directionalLight.shadow.camera.far = 2.1 // light is only 2 meters above the ground
 
     this.scene.add(directionalLight)
   }
