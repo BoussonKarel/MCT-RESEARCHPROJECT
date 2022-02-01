@@ -15,7 +15,7 @@ export class BaseObject {
   physicsBody?: CANNON.Body
   scale?: number = 1
 
-  constructor() {    
+  constructor() {
     this.world = new World()
     this.physics = new Physics()
   }
@@ -65,7 +65,7 @@ export class BaseObject {
   }
 
   // Create a simple box, using the bounding box of the object
-  createSimplePhysicsBox() {
+  createSimplePhysicsBox(mass = 0.5) {
     this.mesh.geometry.computeBoundingBox()
     const box3 = this.mesh.geometry.boundingBox
 
@@ -73,7 +73,7 @@ export class BaseObject {
     dimensions.multiplyScalar(this.scale)
 
     this.physicsBody = new CANNON.Body({
-      mass: 0.01, // kg
+      mass: mass, // kg
       shape: new CANNON.Box(
         new CANNON.Vec3(dimensions.x/2, dimensions.y/2, dimensions.z/2)
         ),
