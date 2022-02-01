@@ -7,7 +7,7 @@ export class Floor {
   world: World
   
   geometry: THREE.PlaneGeometry
-  material: THREE.MeshBasicMaterial
+  material: THREE.MeshStandardMaterial
   mesh: THREE.Mesh
   
   physics: Physics
@@ -18,7 +18,7 @@ export class Floor {
     
     // ThreeJS
     this.geometry = new THREE.PlaneGeometry(5, 5)
-    this.material = new THREE.MeshBasicMaterial({
+    this.material = new THREE.MeshStandardMaterial({
       map: this.world.resources.items["woodFloor"]
     })
 
@@ -26,6 +26,8 @@ export class Floor {
 
     this.mesh.position.set(0, 0, 0)
     this.mesh.rotation.x = -Math.PI / 2
+
+    this.mesh.receiveShadow = true; // SHADOW
 
     this.world.scene.add(this.mesh)
 

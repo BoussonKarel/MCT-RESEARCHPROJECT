@@ -48,6 +48,9 @@ export class Arduino extends ElectronicsObject {
     // Mesh, no geometry or material, we are using a resource
     this.mesh =
       this.world.resources.items["Arduino"].scene.children[0].children[0]
+    
+    const boundingBox = new THREE.BoxHelper(this.mesh, 0xff0000)
+    this.mesh.add(boundingBox)
 
     // Scale
     this.scale = 1 / 1000 // Designed at 1000x the size (45m to 45mm)

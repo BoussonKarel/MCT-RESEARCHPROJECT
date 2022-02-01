@@ -9,6 +9,7 @@ import { Debug } from "./Debug"
 
 import { Floor } from "./Objects/Environment/Floor"
 import { Desk } from "./Objects/Environment/Desk"
+import { Arduino } from "./Objects/Electronics/Arduino"
 
 let world: World = null
 
@@ -118,8 +119,24 @@ export class World {
     this.scene.add(ambientLight)
 
     const directionalLight = new THREE.DirectionalLight(0xffffd2, .5)
-    const lampPosition = new THREE.Vector3(0, 2, 0)
-    directionalLight.position.copy(lampPosition)
+    directionalLight.position.set(0,2,0)
+    
+    directionalLight.castShadow = true // SHADOWS
+    directionalLight.shadow.mapSize.set(1024, 1024) // or width/x or height/y
+
+    // far value is way too big > let's fix this
+    // To avoid bugs/glitches
+    directionalLight.shadow.camera.top = 2
+    directionalLight.shadow.camera.right = 2
+    directionalLight.shadow.camera.bottom = -2
+    directionalLight.shadow.camera.left = -2
+
+    directionalLight.shadow.camera.near = 1
+    directionalLight.shadow.camera.far = 6
+
     this.scene.add(directionalLight)
+
+    const ligthHelper = new THREE.DirectionalLightHelper(directionalLight)
+    this.scene.add(ligthHelper)
   }
 }

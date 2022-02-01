@@ -1,7 +1,6 @@
 import * as THREE from "three"
 import { Pin, PinList } from "./Pin"
 import { BaseObject } from "../BaseObject"
-import { Connection } from "./Connection"
 import { ElectronicsWorld } from "../../ElectronicsWorld"
 
 

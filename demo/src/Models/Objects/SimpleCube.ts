@@ -49,6 +49,10 @@ export class SimpleCube extends BaseObject {
 
     // Mesh
     this.mesh = new THREE.Mesh(this.geometry, this.material)
+
+    // SHADOW
+    this.mesh.castShadow = true
+    this.mesh.receiveShadow = true
     
     // Transform
     if (options.position) this.mesh.position.copy(options.position)

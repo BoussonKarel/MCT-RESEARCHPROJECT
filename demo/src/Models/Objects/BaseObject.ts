@@ -3,7 +3,6 @@ import * as CANNON from "cannon-es"
 
 import { Physics } from "../Physics"
 import { World } from "../World"
-import { EventEmitter } from "events"
 
 export class BaseObject {
   world: World
