@@ -50,8 +50,8 @@ export class UltrasoneScenario extends Scenario {
 
   addStartObjects() {
     // Add the components
-    this.objects.arduino = new Arduino({position: new THREE.Vector3(-0.05,.75,0)})
-    this.objects.ultrasone = new UltrasoneSensor({position: new THREE.Vector3(0.05,.75,0)})
+    this.objects.arduino = new Arduino({position: new THREE.Vector3(-0.05, .75, -0.25)})
+    this.objects.ultrasone = new UltrasoneSensor({position: new THREE.Vector3(0.05, .75, -0.25)})
   }
 
   startStep2() {

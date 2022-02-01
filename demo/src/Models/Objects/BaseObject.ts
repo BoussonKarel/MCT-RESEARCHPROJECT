@@ -28,9 +28,6 @@ export class BaseObject {
   finishConstructor() {
     // needs to be done after the child class constructor()
     this.mesh.userData.component = this
-
-    // Add mesh to scene
-    this.world.scene.add(this.mesh)
     
     // Add physics body to physics world
     if (this.physicsBody) this.physics.addToPhysicsWorld(this.mesh, this.physicsBody)

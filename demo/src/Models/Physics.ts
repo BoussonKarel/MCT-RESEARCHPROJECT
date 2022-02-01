@@ -56,10 +56,15 @@ export class Physics {
       // Being dragged
       // --> 3D world to Physics world
       if (object.mesh === this.world.controls.movingObject) {
+        const position = new THREE.Vector3()
+        const quaternion = new THREE.Quaternion()
+        object.mesh.getWorldPosition(position)
+        object.mesh.getWorldQuaternion(quaternion)
+
         // @ts-ignore
-        object.body.position.copy(object.mesh.position)
+        object.body.position.copy(position)
         // @ts-ignore
-        object.body.quaternion.copy(object.mesh.quaternion)
+        object.body.quaternion.copy(quaternion)
       }
       // Not being dragged
       // --> Physics world to 3D world

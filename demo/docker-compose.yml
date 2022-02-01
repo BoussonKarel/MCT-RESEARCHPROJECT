@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   demo:
-    image: ghcr.io/boussonkarel/mct-researchproject:latest
+    image: ghcr.io/boussonkarel/mct-researchproject:vr
     build:
       context: .
       dockerfile: ./Dockerfile
